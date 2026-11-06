@@ -1,0 +1,46 @@
+import { store, on, load, select } from './state/store.js';
+import { demoData } from './state/demo.js';
+import { relayout, highlight, resetScene } from './render/scene.js';
+import { initPersonForm, refreshPersonForm } from './ui/personForm.js';
+import { initLinkForm, refreshLinkForm } from './ui/linkForm.js';
+import { initDetails, renderDetails } from './ui/details.js';
+import { initToolbar } from './ui/toolbar.js';
+import { initPanZoom } from './ui/panZoom.js';
+import { $ } from './utils/dom.js';
+
+function updateStatus() {
+  const { people, links } = store.state;
+  $('#stats').textContent =
+    `${people.length} ${people.length === 1 ? 'person' : 'people'} \u00b7 ` +
+    `${links.length} connection${links.length === 1 ? '' : 's'}`;
+  $('#empty').hidden = people.length > 0;
+}
+
+// The details card renders before relayout so the fit can leave room for it.
+function refreshAll({ fit = true, animate = true } = {}) {
+  refreshPersonForm();
+  refreshLinkForm();
+  renderDetails();
+  relayout({ fit, animate });
+  updateStatus();
+}
+
+initPersonForm();
+initLinkForm();
+initDetails();
+initToolbar();
+initPanZoom();
+
+on('change', ({ fit }) => refreshAll({ fit }));
+on('reset', resetScene);
+on('select', () => {
+  highlight();
+  renderDetails();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !e.target.closest('input, select')) select(null);
+});
+
+store.state = load() || demoData();
+refreshAll({ animate: false });

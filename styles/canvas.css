@@ -1,0 +1,105 @@
+.canvas {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(#d7dce8 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.stats {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  color: var(--muted);
+}
+
+.empty h3 {
+  margin: 0 0 6px;
+  color: var(--text);
+}
+
+.empty p { margin: 0; }
+
+.legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoom {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.zoom button {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  font-size: 18px;
+}
+
+.zoom button + button { border-top: 1px solid var(--border); }
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 20px);
+  max-width: 60%;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #1d2433;
+  color: #fff;
+  font-size: 13.5px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast.error { background: var(--danger); }
