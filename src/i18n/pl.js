@@ -81,8 +81,6 @@ export default {
   'file.pngFailed': 'Eksport PNG nie powiódł się: {msg}',
   'file.import': 'Importuj JSON',
   'file.import.desc': 'Wczytaj drzewo z pliku kopii zapasowej',
-  'file.demo': 'Wczytaj przykład',
-  'file.demo.desc': 'Zastąp drzewo przykładową rodziną',
   'file.clear': 'Wyczyść wszystko',
   'file.clear.desc': 'Usuń wszystkich z drzewa',
   'file.imported': {
@@ -93,7 +91,6 @@ export default {
   },
   'file.importFailed': 'Import nie powiódł się: {msg}',
   'file.invalid': 'Nieprawidłowy format pliku',
-  'file.confirmDemo': 'Zastąpić obecne drzewo przykładową rodziną?',
   'file.confirmClear': 'Usunąć wszystkich z drzewa?',
 
   'settings.title': 'Ustawienia',
@@ -117,7 +114,7 @@ export default {
 
   'canvas.emptyTitle': 'Twoje drzewo jest puste',
   'canvas.emptyText':
-    'Wybierz <b>Dodaj osobę</b> w panelu bocznym lub wczytaj przykładową rodzinę w zakładce <b>Plik</b>.',
+    'Wybierz <b>Dodaj osobę</b> w panelu bocznym lub zaimportuj kopię zapasową w zakładce <b>Plik</b>.',
   'legend.blood': 'Pokrewieństwo',
   'legend.nonblood': 'Bez pokrewieństwa (partner, adopcja, przybrani)',
   'zoom.in': 'Powiększ',

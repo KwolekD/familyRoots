@@ -9,7 +9,7 @@ state = {
 }
 ```
 
-- `id`: string. New ones come from `uid()` (time + random). Demo uses readable ids.
+- `id`: string. New ones come from `uid()` (time + random).
 - `birth` / `death`: `YYYY-MM-DD` strings from `<input type="date">`, or `''`.
 - `gender`: `'f' | 'm' | ''`.
 - `familyName`: birth/maiden name. Shown via `familyNameLabel()` only when it differs from `surname`.
@@ -38,7 +38,7 @@ Deleting a person (`removePerson`) also deletes all their links.
 ## Persistence
 
 - `localStorage[STORAGE_KEY]` (`family-tree-app.v1`). Saved on every `commit()`. Failures are silently ignored.
-- On startup: `load()` → `sanitize()`. If nothing is saved, or the data is invalid, the demo loads.
+- On startup: `load()` → `sanitize()`. If nothing is saved, or the data is invalid, the tree starts empty.
 - Export: pretty-printed JSON download `family-tree.json`. Import: `sanitize()` then `replaceState()`.
 - `sanitize()` coerces fields to strings, drops people without a string id, drops links to unknown people, self-links and unknown types, and generates missing link ids.
 

@@ -82,14 +82,11 @@ export default {
   'file.pngFailed': 'PNG export failed: {msg}',
   'file.import': 'Import JSON',
   'file.import.desc': 'Load a tree from a backup file',
-  'file.demo': 'Load demo',
-  'file.demo.desc': 'Replace the tree with a sample family',
   'file.clear': 'Clear all',
   'file.clear.desc': 'Remove everyone from the tree',
   'file.imported': { one: 'Imported {n} person', other: 'Imported {n} people' },
   'file.importFailed': 'Import failed: {msg}',
   'file.invalid': 'Invalid file format',
-  'file.confirmDemo': 'Replace the current tree with the demo family?',
   'file.confirmClear': 'Remove everyone from the tree?',
 
   'settings.title': 'Settings',
@@ -113,7 +110,7 @@ export default {
 
   'canvas.emptyTitle': 'Your tree is empty',
   'canvas.emptyText':
-    'Choose <b>Add a person</b> in the sidebar, or load the demo family from the <b>File</b> tab.',
+    'Choose <b>Add a person</b> in the sidebar, or import a backup from the <b>File</b> tab.',
   'legend.blood': 'Blood relation',
   'legend.nonblood': 'Not blood (partner, adoption, step)',
   'zoom.in': 'Zoom in',

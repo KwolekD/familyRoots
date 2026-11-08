@@ -30,7 +30,7 @@ Read the relevant file before working in that area. Keep this file short: put de
 - DOM lookups via `$` from [src/utils/dom.js](src/utils/dom.js). IDs are defined in [index.html](index.html).
 - Any user text interpolated into HTML strings goes through `esc()` from [src/utils/format.js](src/utils/format.js).
 - Mutate `store.state` then call `commit()`. Never re-render manually from a UI module.
-- UI text is never hardcoded: add a key to both `src/i18n/en.js` and `pl.js`, then use `t()` or a `data-i18n*` attribute. Sample data uses Polish names.
+- UI text is never hardcoded: add a key to both `src/i18n/en.js` and `pl.js`, then use `t()` or a `data-i18n*` attribute.
 - Colors only via tokens from [styles/theme.css](styles/theme.css) (light + dark).
 - Comments explain *why*, briefly.
 

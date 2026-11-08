@@ -1,5 +1,4 @@
 import { store, replaceState, sanitize } from '../state/store.js';
-import { demoData } from '../state/demo.js';
 import { $ } from '../utils/dom.js';
 import { toast } from './toast.js';
 import { t } from '../i18n/index.js';
@@ -43,11 +42,6 @@ export function initToolbar() {
   $('#export-png-btn').addEventListener('click', exportPng);
   $('#import-btn').addEventListener('click', () => $('#import-file').click());
   $('#import-file').addEventListener('change', importJson);
-
-  $('#demo-btn').addEventListener('click', () => {
-    if (store.state.people.length && !confirm(t('file.confirmDemo'))) return;
-    replaceState(demoData());
-  });
 
   $('#clear-btn').addEventListener('click', () => {
     if (!store.state.people.length || !confirm(t('file.confirmClear'))) return;

@@ -4,17 +4,16 @@
 
 | Folder | Role |
 |---|---|
-| `src/main.js` | Entry point. Inits UI modules, subscribes to store events, loads saved state (or demo). |
+| `src/main.js` | Entry point. Inits UI modules, subscribes to store events, loads saved state (or starts empty). |
 | `src/config.js` | Constants: storage keys, default settings, card size, gaps, animation time, zoom limits. |
 | `src/state/store.js` | Single global `store` (`state: {people, links}`, `selectedId`), tiny event bus, persistence, `sanitize()`. |
 | `src/state/settings.js` | UI preferences (`settings`, `setSettings`, `onSettings`, `defaultSettings`), saved under their own localStorage key so import/clear don't touch them. Detects the default language. |
 | `src/i18n/` | `t()`, `applyTranslations()`, `en.js` / `pl.js` dictionaries. See [i18n-theme.md](i18n-theme.md). |
-| `src/state/demo.js` | `demoData()`: 15-person, 4-generation sample family. |
 | `src/model/graph.js` | Pure graph helpers: `buildIndex`, `components`, `isAncestor`. |
 | `src/model/relations.js` | `addLink` (with validation), `toggleLinkBlood`. See [data-model.md](data-model.md). |
 | `src/layout/` | `assignGenerations`, `computeLayout`. Pure functions with no DOM access. See [layout.md](layout.md). |
 | `src/render/` | `scene.js` (camera, animation, relayout), `nodes.js` (person cards), `edges.js` (connector paths), `png.js` (PNG export). |
-| `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export JSON/PNG, import, demo, clear), `panZoom`, `toast`, `formHelpers`. |
+| `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export JSON/PNG, import, clear), `panZoom`, `toast`, `formHelpers`. |
 | `src/utils/` | `dates` (parse, long date, age), `dom` (`$`), `format` (`uid`, `pairKey`, `esc`, `fullName`, labels). |
 | `styles/` | `theme.css` (light/dark color tokens), then one CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details. |
 
@@ -37,7 +36,7 @@ The store emits three events (`on(event, fn)` in `store.js`):
 
 - **`change`** `{fit}`: fired by `commit()`. `main.js` → `refreshAll()`: refresh both forms' selects, render details, `relayout()`, update stats.
 - **`select`** `id`: fired by `select(id)`. Highlights the node and re-renders details. No relayout.
-- **`reset`**: fired by `replaceState()` (import/demo/clear). Clears animated positions so the new tree doesn't animate from the old one.
+- **`reset`**: fired by `replaceState()` (import/clear). Clears animated positions so the new tree doesn't animate from the old one.
 
 Typical mutation:
 
