@@ -15,6 +15,7 @@ No framework and no build step: plain HTML, CSS and JavaScript (ES modules), dra
 - Details card for the selected person, showing age and connections
 - Saves automatically to `localStorage`
 - Export and import the tree as JSON
+- Export the whole tree as a PNG image
 - Demo family to try things out
 - English and Polish UI (defaults to your browser language)
 - Light and dark theme, or follow the system setting
@@ -40,7 +41,7 @@ The app uses ES modules, so it has to be served over HTTP. Opening `index.html` 
 - **Select**: click a person to open their details card. Press `Esc` to close it.
 - **Edit**: double-click a person, or use the details card.
 - **Navigate**: drag to pan, scroll to zoom, or use the `+` / `−` / fit buttons.
-- **Data**: *Export JSON*, *Import JSON*, *Load demo* and *Clear all* are in the *File* tab.
+- **Data**: *Export JSON*, *Export PNG*, *Import JSON*, *Load demo* and *Clear all* are in the *File* tab.
 - **Settings**: pick the theme (system / light / dark) and language (English / Polski), and turn animations, the line legend, the statistics badge and the zoom buttons on or off.
 
 ## Project structure

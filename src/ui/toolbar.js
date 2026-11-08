@@ -3,14 +3,27 @@ import { demoData } from '../state/demo.js';
 import { $ } from '../utils/dom.js';
 import { toast } from './toast.js';
 import { t } from '../i18n/index.js';
+import { treeToPng } from '../render/png.js';
 
-function exportJson() {
-  const blob = new Blob([JSON.stringify(store.state, null, 2)], { type: 'application/json' });
+function download(blob, name) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'family-tree.json';
+  a.download = name;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+function exportJson() {
+  download(new Blob([JSON.stringify(store.state, null, 2)], { type: 'application/json' }), 'family-tree.json');
+}
+
+async function exportPng() {
+  if (!store.state.people.length) return toast(t('file.pngEmpty'), 'error');
+  try {
+    download(await treeToPng(), 'family-tree.png');
+  } catch (err) {
+    toast(t('file.pngFailed', { msg: err.message }), 'error');
+  }
 }
 
 async function importJson(e) {
@@ -27,6 +40,7 @@ async function importJson(e) {
 
 export function initToolbar() {
   $('#export-btn').addEventListener('click', exportJson);
+  $('#export-png-btn').addEventListener('click', exportPng);
   $('#import-btn').addEventListener('click', () => $('#import-file').click());
   $('#import-file').addEventListener('change', importJson);
 

@@ -39,6 +39,13 @@ Components are laid out left to right, separated by `COMPONENT_GAP`. `adjacent` 
 - Zoom limits: `MIN_ZOOM`..`MAX_ZOOM` in config.
 - A `ResizeObserver` on the SVG resizes `camera.view` to the new canvas size around the same centre (sidebar toggle, window resize), so zoom is kept and nothing re-fits.
 
+## PNG export (src/render/png.js)
+
+- Clones `#tree`, inlines computed styles (CSS classes don't apply to an SVG drawn as an image), sets `viewBox` to the bbox of `#edges` + `#nodes` plus `PNG_PAD`, then draws it on a canvas filled with `--bg`. Uses the current theme.
+- Scale is `PNG_SCALE` px per unit, shrunk for big trees so the canvas stays under `PNG_MAX_SIDE` / `PNG_MAX_PIXELS`. The whole tree is always included, whatever the camera shows.
+- The selection highlight and `<title>` tooltips are left out.
+- A new CSS property in tree styles must be added to `PROPS`, or the export won't show it.
+
 ## Performance notes
 
 Edges are rebuilt as an `innerHTML` string on every frame, and the layout runs O(sweeps × units × relatives). This is fine for hundreds of people. Profile before scaling to thousands.

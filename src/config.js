@@ -28,3 +28,9 @@ export const ANIM_MS = 700;
 export const MAX_ZOOM = 2.5;
 export const MIN_ZOOM = 1 / 12;
 export const MAX_FIT_ZOOM = 1.15;
+
+// PNG export: pixels per tree unit, shrunk automatically for big trees to stay within canvas limits.
+export const PNG_SCALE = 2;
+export const PNG_PAD = 40;
+export const PNG_MAX_SIDE = 16000;
+export const PNG_MAX_PIXELS = 120e6;
