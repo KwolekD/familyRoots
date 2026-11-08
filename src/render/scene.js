@@ -122,3 +122,18 @@ export const fitToScreen = () => animateTo(fitView());
 export const highlight = () => highlightSelection(nodeEls, store.selectedId);
 
 export const resetScene = () => shown.clear();
+
+// When the canvas changes size (sidebar toggle, window resize), keep the zoom level
+// and the centre of the view instead of letting the SVG stretch or letterbox.
+let lastSize = null;
+new ResizeObserver(() => {
+  const s = svgSize();
+  if (lastSize && s.w && s.h) {
+    const v = camera.view;
+    const w = v.w * (s.w / lastSize.w);
+    const h = v.h * (s.h / lastSize.h);
+    camera.view = { x: v.x + (v.w - w) / 2, y: v.y + (v.h - h) / 2, w, h };
+    draw();
+  }
+  lastSize = s;
+}).observe(svg);
