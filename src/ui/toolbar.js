@@ -13,13 +13,13 @@ function download(blob, name) {
 }
 
 function exportJson() {
-  download(new Blob([JSON.stringify(store.state, null, 2)], { type: 'application/json' }), 'family-tree.json');
+  download(new Blob([JSON.stringify(store.state, null, 2)], { type: 'application/json' }), 'family-roots.json');
 }
 
 async function exportPng() {
   if (!store.state.people.length) return toast(t('file.pngEmpty'), 'error');
   try {
-    download(await treeToPng(), 'family-tree.png');
+    download(await treeToPng(), 'family-roots.png');
   } catch (err) {
     toast(t('file.pngFailed', { msg: err.message }), 'error');
   }

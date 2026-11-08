@@ -1,4 +1,4 @@
-# Family Tree
+# Family Roots
 
 A small web app for building your own family tree in the browser. Add people, connect them as parents, children or partners, and the tree lays itself out automatically by generation.
 

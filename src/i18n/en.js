@@ -2,7 +2,7 @@
 // A value can be an object of plural forms (Intl.PluralRules categories), picked by the `n` param.
 export default {
   locale: 'en-GB',
-  'app.title': 'Family Tree',
+  'app.title': 'Family Roots',
 
   'nav.sidebar': 'Sidebar',
   'tab.tree': 'Tree',
@@ -15,7 +15,7 @@ export default {
   'common.back': '← Back',
   'common.cancel': 'Cancel',
 
-  'menu.title': 'Family Tree',
+  'menu.title': 'Family Roots',
   'menu.lead': 'What would you like to do?',
   'menu.addPerson': 'Add a person',
   'menu.addPerson.desc': 'Create a new card, optionally linked to a relative',

@@ -1,4 +1,4 @@
-# Family Tree App
+# Family Roots
 
 Browser app for building a family tree. Vanilla JS (ES modules), SVG rendering, CSS. No framework, no bundler, no tests yet. User-facing overview: [README.md](README.md).
 

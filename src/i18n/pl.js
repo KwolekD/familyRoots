@@ -1,7 +1,7 @@
 // Polish strings. Plural objects use the one / few / many / other categories of Intl.PluralRules('pl').
 export default {
   locale: 'pl-PL',
-  'app.title': 'Drzewo genealogiczne',
+  'app.title': 'Family Roots',
 
   'nav.sidebar': 'Panel boczny',
   'tab.tree': 'Drzewo',
@@ -14,7 +14,7 @@ export default {
   'common.back': '← Wstecz',
   'common.cancel': 'Anuluj',
 
-  'menu.title': 'Drzewo genealogiczne',
+  'menu.title': 'Family Roots',
   'menu.lead': 'Co chcesz zrobić?',
   'menu.addPerson': 'Dodaj osobę',
   'menu.addPerson.desc': 'Utwórz nową kartę, opcjonalnie powiązaną z krewnym',
