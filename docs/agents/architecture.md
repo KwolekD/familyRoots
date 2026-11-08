@@ -7,7 +7,8 @@
 | `src/main.js` | Entry point. Inits UI modules, subscribes to store events, loads saved state (or demo). |
 | `src/config.js` | Constants: storage keys, default settings, card size, gaps, animation time, zoom limits. |
 | `src/state/store.js` | Single global `store` (`state: {people, links}`, `selectedId`), tiny event bus, persistence, `sanitize()`. |
-| `src/state/settings.js` | UI preferences (`settings`, `setSettings`, `onSettings`), saved under their own localStorage key so import/clear don't touch them. |
+| `src/state/settings.js` | UI preferences (`settings`, `setSettings`, `onSettings`, `defaultSettings`), saved under their own localStorage key so import/clear don't touch them. Detects the default language. |
+| `src/i18n/` | `t()`, `applyTranslations()`, `en.js` / `pl.js` dictionaries. See [i18n-theme.md](i18n-theme.md). |
 | `src/state/demo.js` | `demoData()`: 15-person, 4-generation sample family. |
 | `src/model/graph.js` | Pure graph helpers: `buildIndex`, `components`, `isAncestor`. |
 | `src/model/relations.js` | `addLink` (with validation), `toggleLinkBlood`. See [data-model.md](data-model.md). |
@@ -15,7 +16,7 @@
 | `src/render/` | `scene.js` (camera, animation, relayout), `nodes.js` (person cards), `edges.js` (connector paths). |
 | `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export/import/demo/clear), `panZoom`, `toast`, `formHelpers`. |
 | `src/utils/` | `dates` (parse, long date, age), `dom` (`$`), `format` (`uid`, `pairKey`, `esc`, `fullName`, labels). |
-| `styles/` | One CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details. |
+| `styles/` | `theme.css` (light/dark color tokens), then one CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details. |
 
 ## Sidebar
 
@@ -28,7 +29,7 @@ The UI rule is *one thing at a time*: show a choice first, and fields only after
 
 ## Settings
 
-`animate`, `showLegend`, `showStats`, `showZoom` (toggles in the Settings tab) plus `sidebarOpen`, `sidebarTab`. `settingsPanel.apply()` hides the overlays and sets `body.no-motion` (kills CSS transitions). `scene.js` reads `settings.animate` directly.
+`theme`, `lang` (radio groups), `animate`, `showLegend`, `showStats`, `showZoom` (toggles) in the Settings tab, plus `sidebarOpen`, `sidebarTab`. `settingsPanel.apply()` hides the overlays, sets `body.no-motion` (kills CSS transitions) and `<html data-theme>`. `scene.js` reads `settings.animate` directly. A `lang` change re-renders all text; see [i18n-theme.md](i18n-theme.md).
 
 ## Event flow
 

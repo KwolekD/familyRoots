@@ -3,6 +3,7 @@ import { addLink } from '../model/relations.js';
 import { $ } from '../utils/dom.js';
 import { fillPeopleSelects, setBlood, getBlood } from './formHelpers.js';
 import { toast } from './toast.js';
+import { t } from '../i18n/index.js';
 
 const form = $('#link-form');
 const { a, b, type } = form.elements;
@@ -24,7 +25,7 @@ function onSubmit(e) {
   else err = addLink('partner', a.value, b.value, blood);
   if (err) return toast(err, 'error');
   commit();
-  toast('Connection added');
+  toast(t('link.added'));
 }
 
 export function initLinkForm() {

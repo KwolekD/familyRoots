@@ -1,3 +1,5 @@
+import { t } from '../i18n/index.js';
+
 // Dates are stored as ISO strings (YYYY-MM-DD) straight from <input type="date">.
 
 export function parseDate(s) {
@@ -16,7 +18,7 @@ export function longDate(s) {
   if (!p) return '';
   const d = new Date(2000, p.m - 1, p.d);
   d.setFullYear(p.y);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  return d.toLocaleDateString(t('locale'), { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 export function ageOf(person) {

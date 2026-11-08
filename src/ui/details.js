@@ -5,18 +5,19 @@ import { longDate, ageOf } from '../utils/dates.js';
 import { $ } from '../utils/dom.js';
 import { startAdd, startEdit } from './personForm.js';
 import { toast } from './toast.js';
+import { t } from '../i18n/index.js';
 
 const panel = $('#details');
 
 function connectionItem(p, l) {
   const other = byId(l.a === p.id ? l.b : l.a);
-  const rel = l.type === 'partner' ? 'Partner of' : l.a === p.id ? 'Parent of' : 'Child of';
+  const rel = t(l.type === 'partner' ? 'rel.partnerOf' : l.a === p.id ? 'rel.parentOf' : 'rel.childOf');
   return `<li>
     <svg width="22" height="8"><line x1="2" y1="4" x2="20" y2="4" class="ls ${l.blood ? 'blood' : 'nonblood'}"/></svg>
     <span class="rel">${rel}</span>
     <a href="#" data-go="${other.id}" title="${esc(fullName(other))}">${esc(fullName(other))}</a>
-    <button type="button" data-toggle="${l.id}" title="Switch between blood and not blood line">${l.blood ? 'Blood' : 'Not blood'}</button>
-    <button type="button" data-unlink="${l.id}" title="Remove connection">&times;</button>
+    <button type="button" data-toggle="${l.id}" title="${t('details.toggleBlood')}">${t(l.blood ? 'line.blood' : 'line.nonblood')}</button>
+    <button type="button" data-unlink="${l.id}" title="${t('details.unlink')}">&times;</button>
   </li>`;
 }
 
@@ -29,10 +30,10 @@ export function renderDetails() {
   const age = ageOf(p);
   const initials = (p.firstNames[0] || '') + (p.surname[0] || '');
   const rows = [];
-  if (p.familyName) rows.push(['Family name', esc(p.familyName)]);
-  rows.push(['Born', p.birth ? esc(longDate(p.birth)) : '<span class="muted">unknown</span>']);
-  if (p.death) rows.push(['Died', esc(longDate(p.death))]);
-  if (age !== null) rows.push([p.death ? 'Aged' : 'Age', String(age)]);
+  if (p.familyName) rows.push([t('details.familyName'), esc(p.familyName)]);
+  rows.push([t('details.born'), p.birth ? esc(longDate(p.birth)) : `<span class="muted">${t('details.unknown')}</span>`]);
+  if (p.death) rows.push([t('details.died'), esc(longDate(p.death))]);
+  if (age !== null) rows.push([t(p.death ? 'details.aged' : 'details.age'), String(age)]);
 
   const conns = store.state.links
     .filter((l) => l.a === p.id || l.b === p.id)
@@ -46,19 +47,19 @@ export function renderDetails() {
         <h3>${esc(fullName(p))}</h3>
         <p class="muted">${esc(familyNameLabel(p)) || '&nbsp;'}</p>
       </div>
-      <button type="button" class="close" data-action="close" title="Close">&times;</button>
+      <button type="button" class="close" data-action="close" title="${t('details.close')}">&times;</button>
     </header>
     <dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
     <div class="quick">
-      <button type="button" data-action="addParent">+ Parent</button>
-      <button type="button" data-action="addPartner">+ Partner</button>
-      <button type="button" data-action="addChild">+ Child</button>
+      <button type="button" data-action="addParent">${t('details.addParent')}</button>
+      <button type="button" data-action="addPartner">${t('details.addPartner')}</button>
+      <button type="button" data-action="addChild">${t('details.addChild')}</button>
     </div>
-    <h4>Connections</h4>
-    ${conns ? `<ul class="conns">${conns}</ul>` : '<p class="muted">No connections yet.</p>'}
+    <h4>${t('details.connections')}</h4>
+    ${conns ? `<ul class="conns">${conns}</ul>` : `<p class="muted">${t('details.noConnections')}</p>`}
     <div class="footer">
-      <button type="button" data-action="edit">Edit</button>
-      <button type="button" class="danger" data-action="delete">Delete</button>
+      <button type="button" data-action="edit">${t('details.edit')}</button>
+      <button type="button" class="danger" data-action="delete">${t('details.delete')}</button>
     </div>`;
   panel.hidden = false;
 }
@@ -92,10 +93,10 @@ function onClick(e) {
     case 'addChild':
       return startAdd('childOf', p.id);
     case 'delete':
-      if (confirm(`Delete ${fullName(p)} and all of their connections?`)) {
+      if (confirm(t('details.confirmDelete', { name: fullName(p) }))) {
         removePerson(p.id);
         commit();
-        toast(`${fullName(p)} removed`);
+        toast(t('details.removed', { name: fullName(p) }));
       }
   }
 }

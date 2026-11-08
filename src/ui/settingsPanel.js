@@ -1,10 +1,9 @@
-import { DEFAULT_SETTINGS } from '../config.js';
-import { settings, setSettings, onSettings } from '../state/settings.js';
+import { settings, setSettings, onSettings, defaultSettings } from '../state/settings.js';
 import { $ } from '../utils/dom.js';
 
 const form = $('#settings-form');
 const TOGGLES = ['animate', 'showLegend', 'showStats', 'showZoom'];
-const CHOICES = ['theme'];
+const CHOICES = ['theme', 'lang'];
 const darkQuery = matchMedia('(prefers-color-scheme: dark)');
 
 // Always resolve to an explicit light/dark so the CSS only needs one dark palette.
@@ -31,7 +30,7 @@ export function initSettingsPanel() {
   });
   $('#settings-reset').addEventListener('click', () => {
     const keys = [...TOGGLES, ...CHOICES];
-    setSettings(Object.fromEntries(keys.map((k) => [k, DEFAULT_SETTINGS[k]])));
+    setSettings(Object.fromEntries(keys.map((k) => [k, defaultSettings[k]])));
   });
   darkQuery.addEventListener('change', applyTheme);
   onSettings(apply);

@@ -1,5 +1,6 @@
 import { STORAGE_KEY } from '../config.js';
 import { uid } from '../utils/format.js';
+import { t } from '../i18n/index.js';
 
 // link.type === 'parent'  -> link.a is a parent of link.b
 // link.type === 'partner' -> link.a and link.b are partners
@@ -73,7 +74,7 @@ export function load() {
 }
 
 export function sanitize(data) {
-  if (!data || !Array.isArray(data.people) || !Array.isArray(data.links)) throw new Error('Invalid file format');
+  if (!data || !Array.isArray(data.people) || !Array.isArray(data.links)) throw new Error(t('file.invalid'));
   const str = (v) => (typeof v === 'string' ? v : '');
   const people = data.people
     .filter((p) => p && typeof p.id === 'string')

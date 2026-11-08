@@ -2,6 +2,7 @@ import { store, replaceState, sanitize } from '../state/store.js';
 import { demoData } from '../state/demo.js';
 import { $ } from '../utils/dom.js';
 import { toast } from './toast.js';
+import { t } from '../i18n/index.js';
 
 function exportJson() {
   const blob = new Blob([JSON.stringify(store.state, null, 2)], { type: 'application/json' });
@@ -18,9 +19,9 @@ async function importJson(e) {
   if (!file) return;
   try {
     replaceState(sanitize(JSON.parse(await file.text())));
-    toast(`Imported ${store.state.people.length} people`);
+    toast(t('file.imported', { n: store.state.people.length }));
   } catch (err) {
-    toast(`Import failed: ${err.message}`, 'error');
+    toast(t('file.importFailed', { msg: err.message }), 'error');
   }
 }
 
@@ -30,12 +31,12 @@ export function initToolbar() {
   $('#import-file').addEventListener('change', importJson);
 
   $('#demo-btn').addEventListener('click', () => {
-    if (store.state.people.length && !confirm('Replace the current tree with the demo family?')) return;
+    if (store.state.people.length && !confirm(t('file.confirmDemo'))) return;
     replaceState(demoData());
   });
 
   $('#clear-btn').addEventListener('click', () => {
-    if (!store.state.people.length || !confirm('Remove everyone from the tree?')) return;
+    if (!store.state.people.length || !confirm(t('file.confirmClear'))) return;
     replaceState({ people: [], links: [] });
   });
 }

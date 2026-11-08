@@ -1,10 +1,13 @@
 export const STORAGE_KEY = 'family-tree-app.v1';
 export const SETTINGS_KEY = 'family-tree-app.settings.v1';
 
+export const LANGUAGES = ['en', 'pl'];
 export const THEMES = ['system', 'light', 'dark'];
 
+// `lang` here is only the fallback; settings.js replaces it with the browser language when supported.
 export const DEFAULT_SETTINGS = {
   theme: 'system',
+  lang: 'en',
   animate: true,
   showLegend: true,
   showStats: true,

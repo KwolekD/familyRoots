@@ -5,13 +5,24 @@ import { $ } from '../utils/dom.js';
 import { fillPeopleSelects, setBlood, getBlood } from './formHelpers.js';
 import { showView } from './sidebar.js';
 import { toast } from './toast.js';
+import { t } from '../i18n/index.js';
 
 const form = $('#person-form');
 const fields = form.elements;
 const PERSON_FIELDS = ['firstNames', 'surname', 'familyName', 'birth', 'death', 'gender'];
-const ADD_TITLES = { parentOf: 'Add parent', partnerOf: 'Add partner', childOf: 'Add child' };
-
 let editingId = null;
+// Set when adding a relative from the details card, so the heading can name them.
+let addFor = null;
+
+// Heading and submit text depend on the mode, so they're rebuilt (e.g. after a language switch) rather than set once.
+function renderHeading() {
+  const relative = addFor && byId(addFor.id);
+  let title = t('person.addTitle');
+  if (editingId) title = t('person.editTitle', { name: fullName(byId(editingId)) });
+  else if (relative) title = t(`person.addTitle.${addFor.relation}`, { name: fullName(relative) });
+  $('#form-title').textContent = title;
+  $('#submit-btn').textContent = t(editingId ? 'person.save' : 'person.submit');
+}
 
 // Optional sections stay behind a "+ ..." button until the user asks for them.
 function setMoreOpen(open) {
@@ -32,6 +43,7 @@ export function refreshPersonForm() {
   if (editingId && !byId(editingId)) exitEdit();
   fillPeopleSelects([fields.relative], store.state.people);
   setConnectOpen(connecting());
+  renderHeading();
 }
 
 function updateAlsoParents() {
@@ -47,7 +59,7 @@ function updateAlsoParents() {
   box.innerHTML = partners
     .map(
       (p) => `<label class="check"><input type="checkbox" value="${p.id}" ${partners.length === 1 ? 'checked' : ''}>
-        Also child of ${esc(fullName(p))}</label>`,
+        ${esc(t('person.alsoChildOf', { name: fullName(p) }))}</label>`,
     )
     .join('');
 }
@@ -64,7 +76,8 @@ export function startAdd(relation, relativeId) {
   setBlood(form, relation !== 'partnerOf');
   if (relation === 'childOf') fields.surname.value = byId(relativeId)?.surname || '';
   setConnectOpen(true);
-  $('#form-title').textContent = `${ADD_TITLES[relation]} of ${fullName(byId(relativeId))}`;
+  addFor = { relation, id: relativeId };
+  renderHeading();
   openForm();
 }
 
@@ -73,8 +86,7 @@ export function startEdit(id) {
   if (!p) return;
   editingId = id;
   for (const key of PERSON_FIELDS) fields[key].value = p[key] || '';
-  $('#form-title').textContent = `Edit ${fullName(p)}`;
-  $('#submit-btn').textContent = 'Save changes';
+  renderHeading();
   $('#cancel-edit').hidden = false;
   setMoreOpen(!!(p.familyName || p.death));
   setConnectOpen(false);
@@ -83,10 +95,10 @@ export function startEdit(id) {
 
 export function exitEdit() {
   editingId = null;
+  addFor = null;
   form.reset();
   setBlood(form, true);
-  $('#form-title').textContent = 'Add person';
-  $('#submit-btn').textContent = 'Add to tree';
+  renderHeading();
   $('#cancel-edit').hidden = true;
   setMoreOpen(false);
   setConnectOpen(false);
@@ -126,9 +138,9 @@ function connectNewPerson(person) {
 function onSubmit(e) {
   e.preventDefault();
   const data = readPerson();
-  if (!data.firstNames || !data.surname) return toast('First name and surname are required.', 'error');
+  if (!data.firstNames || !data.surname) return toast(t('person.required'), 'error');
   if (data.birth && data.death && data.death < data.birth) {
-    return toast('Death date cannot be before birth date.', 'error');
+    return toast(t('person.deathBeforeBirth'), 'error');
   }
 
   if (editingId) {
@@ -138,7 +150,7 @@ function onSubmit(e) {
     showView('menu');
     store.selectedId = id;
     commit({ fit: false });
-    return toast('Changes saved');
+    return toast(t('person.saved'));
   }
 
   const person = { id: uid(), ...data };
@@ -148,7 +160,7 @@ function onSubmit(e) {
   store.selectedId = person.id;
   commit();
   if (problems.length) toast(problems.join(' '), 'error');
-  else toast(`${fullName(person)} added to the tree`);
+  else toast(t('person.added', { name: fullName(person) }));
 }
 
 function cancel() {

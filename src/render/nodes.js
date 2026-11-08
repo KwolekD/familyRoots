@@ -2,6 +2,7 @@ import { NODE_W, NODE_H } from '../config.js';
 import { svgEl } from '../utils/dom.js';
 import { fullName, familyNameLabel, truncate } from '../utils/format.js';
 import { shortDate, ageOf } from '../utils/dates.js';
+import { t } from '../i18n/index.js';
 
 function personCard(p) {
   const inner = svgEl('g', { class: 'inner' });
@@ -16,11 +17,11 @@ function personCard(p) {
     .filter(Boolean)
     .join('   ');
   inner.appendChild(
-    svgEl('text', { class: dates ? 'dates' : 'dates unknown', x: 26, y: sub ? 70 : 60 }, dates || 'dates unknown'),
+    svgEl('text', { class: dates ? 'dates' : 'dates unknown', x: 26, y: sub ? 70 : 60 }, dates || t('node.datesUnknown')),
   );
 
   const age = ageOf(p);
-  const ageText = age !== null ? `, ${p.death ? 'aged' : 'age'} ${age}` : '';
+  const ageText = age !== null ? `, ${t(p.death ? 'node.aged' : 'node.age', { n: age })}` : '';
   inner.appendChild(svgEl('title', {}, `${fullName(p)}${sub ? ` (${sub})` : ''}${ageText}`));
   return inner;
 }

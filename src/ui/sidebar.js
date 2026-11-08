@@ -1,5 +1,6 @@
 import { settings, setSettings } from '../state/settings.js';
 import { $ } from '../utils/dom.js';
+import { t } from '../i18n/index.js';
 
 const sidebar = $('#sidebar');
 const toggleBtn = $('#sidebar-toggle');
@@ -9,7 +10,9 @@ const panels = [...sidebar.querySelectorAll('[data-panel]')];
 function render() {
   const open = settings.sidebarOpen;
   sidebar.classList.toggle('collapsed', !open);
-  toggleBtn.title = open ? 'Hide sidebar' : 'Show sidebar';
+  // Keep the key on the element too, so a language switch re-translates the current state.
+  toggleBtn.dataset.i18nTitle = open ? 'sidebar.hide' : 'sidebar.show';
+  toggleBtn.title = t(toggleBtn.dataset.i18nTitle);
   toggleBtn.setAttribute('aria-expanded', String(open));
   for (const b of tabButtons) {
     const active = open && b.dataset.tab === settings.sidebarTab;

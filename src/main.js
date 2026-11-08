@@ -8,13 +8,13 @@ import { initToolbar } from './ui/toolbar.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initSettingsPanel } from './ui/settingsPanel.js';
 import { initPanZoom } from './ui/panZoom.js';
+import { settings, onSettings } from './state/settings.js';
+import { t, applyTranslations } from './i18n/index.js';
 import { $ } from './utils/dom.js';
 
 function updateStatus() {
   const { people, links } = store.state;
-  $('#stats').textContent =
-    `${people.length} ${people.length === 1 ? 'person' : 'people'} \u00b7 ` +
-    `${links.length} connection${links.length === 1 ? '' : 's'}`;
+  $('#stats').textContent = `${t('count.people', { n: people.length })} \u00b7 ${t('count.links', { n: links.length })}`;
   $('#empty').hidden = people.length > 0;
 }
 
@@ -27,6 +27,7 @@ function refreshAll({ fit = true, animate = true } = {}) {
   updateStatus();
 }
 
+applyTranslations();
 initSidebar();
 initSettingsPanel();
 initPersonForm();
@@ -40,6 +41,15 @@ on('reset', resetScene);
 on('select', () => {
   highlight();
   renderDetails();
+});
+
+// Static text is swapped in place; everything rendered from JS is simply rendered again.
+let lang = settings.lang;
+onSettings(() => {
+  if (settings.lang === lang) return;
+  lang = settings.lang;
+  applyTranslations();
+  refreshAll({ fit: false, animate: false });
 });
 
 document.addEventListener('keydown', (e) => {

@@ -1,4 +1,5 @@
 import { parseDate } from './dates.js';
+import { t } from '../i18n/index.js';
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
@@ -13,8 +14,7 @@ export const fullName = (p) => `${p.firstNames} ${p.surname}`.trim();
 
 export function familyNameLabel(p) {
   if (!p.familyName || p.familyName === p.surname) return '';
-  const prefix = p.gender === 'f' ? 'z domu' : p.gender === 'm' ? 'z domu' : 'born';
-  return `${prefix} ${p.familyName}`;
+  return t(`familyName.${p.gender || 'u'}`, { name: p.familyName });
 }
 
 export function personLabel(p) {

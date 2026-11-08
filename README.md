@@ -16,6 +16,8 @@ No framework and no build step: plain HTML, CSS and JavaScript (ES modules), dra
 - Saves automatically to `localStorage`
 - Export and import the tree as JSON
 - Demo family to try things out
+- English and Polish UI (defaults to your browser language)
+- Light and dark theme, or follow the system setting
 
 ## Getting started
 
@@ -39,17 +41,18 @@ The app uses ES modules, so it has to be served over HTTP. Opening `index.html` 
 - **Edit**: double-click a person, or use the details card.
 - **Navigate**: drag to pan, scroll to zoom, or use the `+` / `−` / fit buttons.
 - **Data**: *Export JSON*, *Import JSON*, *Load demo* and *Clear all* are in the *File* tab.
-- **Settings**: turn animations, the line legend, the statistics badge and the zoom buttons on or off.
+- **Settings**: pick the theme (system / light / dark) and language (English / Polski), and turn animations, the line legend, the statistics badge and the zoom buttons on or off.
 
 ## Project structure
 
 ```
 index.html            Page layout and forms
-styles/               CSS (base, sidebar, forms, canvas, tree, details)
+styles/               CSS (theme tokens, base, sidebar, forms, canvas, tree, details)
 src/
   main.js             Entry point, wires everything together
   config.js           Layout, zoom and storage constants
-  state/              Store, persistence (localStorage) and demo data
+  state/              Store, settings, persistence (localStorage) and demo data
+  i18n/               English and Polish translations
   model/              Graph helpers and relationship rules/validation
   layout/             Generation assignment and tree layout algorithm
   render/             SVG rendering of nodes, edges and the scene/camera
