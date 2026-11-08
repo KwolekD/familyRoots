@@ -104,6 +104,8 @@ export default {
   'settings.language.desc': 'Domyślnie język przeglądarki',
   'settings.animate': 'Animacje',
   'settings.animate.desc': 'Płynnie przesuwaj karty przy zmianach drzewa',
+  'settings.fullNames': 'Pełne nazwy',
+  'settings.fullNames.desc': 'Nie skracaj nazw; wszystkie karty poszerzają się do najdłuższej',
   'settings.showLegend': 'Legenda linii',
   'settings.showLegend.desc': 'Objaśnienie linii ciągłych i kropkowanych',
   'settings.showStats': 'Statystyki',

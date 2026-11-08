@@ -15,11 +15,14 @@ export const DEFAULT_SETTINGS = {
   showLegend: true,
   showStats: true,
   showZoom: true,
+  fullNames: false,
   sidebarOpen: true,
   sidebarTab: 'tree',
 };
 
 export const NODE_W = 200;
+// Right padding after the longest line when cards are widened to fit full names.
+export const NODE_PAD_RIGHT = 18;
 export const NODE_H = 86;
 export const H_GAP = 44;
 export const PARTNER_GAP = 64;

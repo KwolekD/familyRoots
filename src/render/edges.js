@@ -1,4 +1,5 @@
-import { NODE_W, NODE_H, V_GAP } from '../config.js';
+import { NODE_H, V_GAP } from '../config.js';
+import { nodeSize } from '../layout/nodeSize.js';
 import { pairKey } from '../utils/format.js';
 
 const pathOf = (d, blood) => `<path class="link ${blood ? 'blood' : 'nonblood'}" d="${d}"/>`;
@@ -23,11 +24,11 @@ function partnerEdges(links, pos, adjacent, out, marks) {
     if (!a || !b) continue;
     const [L, R] = a.x <= b.x ? [a, b] : [b, a];
     if (adjacent.has(pairKey(l.a, l.b))) {
-      out.push(pathOf(`M${L.x + NODE_W} ${L.y + NODE_H / 2}L${R.x} ${R.y + NODE_H / 2}`, l.blood));
-      marks.push(partnerMark((L.x + NODE_W + R.x) / 2, (L.y + R.y) / 2 + NODE_H / 2));
+      out.push(pathOf(`M${L.x + nodeSize.w} ${L.y + NODE_H / 2}L${R.x} ${R.y + NODE_H / 2}`, l.blood));
+      marks.push(partnerMark((L.x + nodeSize.w + R.x) / 2, (L.y + R.y) / 2 + NODE_H / 2));
     } else {
-      const x1 = L.x + NODE_W / 2;
-      const x2 = R.x + NODE_W / 2;
+      const x1 = L.x + nodeSize.w / 2;
+      const x2 = R.x + nodeSize.w / 2;
       const lift = 36 + Math.abs(x2 - x1) * 0.08;
       out.push(pathOf(`M${x1} ${L.y}C${x1} ${L.y - lift} ${x2} ${R.y - lift} ${x2} ${R.y}`, l.blood));
       marks.push(partnerMark((x1 + x2) / 2, (L.y + R.y) / 2 - lift * 0.75));
@@ -47,7 +48,7 @@ function parentEdges(links, pos, adjacent, out) {
   for (const [childId, ls] of byChild) {
     const c = pos.get(childId);
     if (!c) continue;
-    const cx = c.x + NODE_W / 2;
+    const cx = c.x + nodeSize.w / 2;
     const used = new Set();
     for (let i = 0; i < ls.length; i++) {
       for (let j = i + 1; j < ls.length; j++) {
@@ -58,13 +59,13 @@ function parentEdges(links, pos, adjacent, out) {
         if (!A || !B) continue;
         used.add(i);
         used.add(j);
-        out.push(pathOf(elbow((A.x + B.x) / 2 + NODE_W / 2, Math.max(A.y, B.y) + NODE_H / 2, cx, c.y), ls[i].blood));
+        out.push(pathOf(elbow((A.x + B.x) / 2 + nodeSize.w / 2, Math.max(A.y, B.y) + NODE_H / 2, cx, c.y), ls[i].blood));
       }
     }
     ls.forEach((l, i) => {
       if (used.has(i)) return;
       const A = pos.get(l.a);
-      if (A) out.push(pathOf(elbow(A.x + NODE_W / 2, A.y + NODE_H, cx, c.y), l.blood));
+      if (A) out.push(pathOf(elbow(A.x + nodeSize.w / 2, A.y + NODE_H, cx, c.y), l.blood));
     });
   }
 }

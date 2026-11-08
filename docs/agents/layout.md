@@ -1,6 +1,10 @@
 # Layout & rendering
 
-All layout code is pure: `(people, links) → positions`. Rendering is SVG, positioned in world coordinates and viewed through `viewBox`.
+All layout code is pure: `(people, links) → positions`, except that it reads the shared card width from `nodeSize.w` ([src/layout/nodeSize.js](../../src/layout/nodeSize.js)). Rendering is SVG, positioned in world coordinates and viewed through `viewBox`.
+
+## Card width
+
+Every card has the same width, `nodeSize.w`. It is `NODE_W`, unless the *Full names* setting is on: then `relayout()` sets it via `cardWidth(people)` in `nodes.js`, which measures each card's lines on a canvas (fonts mirror `.node .name/.sub/.dates` in `tree.css`, keep them in sync) and widens all cards to fit the longest one. Names are then not truncated. Layout, edges and `fitView()` must use `nodeSize.w`, never `NODE_W` directly.
 
 ## Generations (src/layout/generations.js)
 

@@ -100,6 +100,8 @@ export default {
   'settings.language.desc': 'Defaults to your browser language',
   'settings.animate': 'Animations',
   'settings.animate.desc': 'Smoothly move cards when the tree changes',
+  'settings.fullNames': 'Full names',
+  'settings.fullNames.desc': "Don't shorten names; all cards grow to fit the longest one",
   'settings.showLegend': 'Line legend',
   'settings.showLegend.desc': 'Explain solid and dotted lines',
   'settings.showStats': 'Statistics',

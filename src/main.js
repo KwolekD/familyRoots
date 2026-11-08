@@ -44,11 +44,18 @@ on('select', () => {
 
 // Static text is swapped in place; everything rendered from JS is simply rendered again.
 let lang = settings.lang;
+let fullNames = settings.fullNames;
 onSettings(() => {
-  if (settings.lang === lang) return;
-  lang = settings.lang;
-  applyTranslations();
-  refreshAll({ fit: false, animate: false });
+  if (settings.lang !== lang) {
+    lang = settings.lang;
+    applyTranslations();
+    refreshAll({ fit: false, animate: false });
+  }
+  // Card width changes, so the whole layout shifts; animate it and re-fit.
+  if (settings.fullNames !== fullNames) {
+    fullNames = settings.fullNames;
+    relayout();
+  }
 });
 
 document.addEventListener('keydown', (e) => {

@@ -1,4 +1,5 @@
-import { NODE_W, H_GAP, PARTNER_GAP, LAYER_H, COMPONENT_GAP } from '../config.js';
+import { H_GAP, PARTNER_GAP, LAYER_H, COMPONENT_GAP } from '../config.js';
+import { nodeSize } from './nodeSize.js';
 import { buildIndex, components } from '../model/graph.js';
 import { assignGenerations } from './generations.js';
 import { pairKey } from '../utils/format.js';
@@ -53,7 +54,7 @@ function buildUnits(ids, idx, gen, order) {
       for (const s of idx.get(x).partners) if (inGroup.has(s) && !visited.has(s)) walk(s);
     };
     walk(start);
-    const unit = { members, gen: g, x: 0, desired: 0, w: members.length * NODE_W + (members.length - 1) * PARTNER_GAP };
+    const unit = { members, gen: g, x: 0, desired: 0, w: members.length * nodeSize.w + (members.length - 1) * PARTNER_GAP };
     members.forEach((m, i) => unitOf.set(m, { unit, i }));
     units.push(unit);
   }
@@ -94,7 +95,7 @@ function layoutComponent(ids, idx, insertion) {
     }
   }
 
-  const offset = (i) => i * (NODE_W + PARTNER_GAP) + NODE_W / 2;
+  const offset = (i) => i * (nodeSize.w + PARTNER_GAP) + nodeSize.w / 2;
   const centerOf = (id) => {
     const { unit, i } = unitOf.get(id);
     return unit.x + offset(i);
@@ -118,7 +119,7 @@ function layoutComponent(ids, idx, insertion) {
       let cnt = 0;
       targets.forEach((t, i) => {
         if (t !== null) {
-          sum += t - offset(i) + NODE_W / 2;
+          sum += t - offset(i) + nodeSize.w / 2;
           cnt++;
         }
       });
@@ -138,7 +139,7 @@ function layoutComponent(ids, idx, insertion) {
   const adjacent = [];
   for (const u of units) {
     u.members.forEach((m, i) => {
-      pos.set(m, { x: u.x + i * (NODE_W + PARTNER_GAP), y: u.gen * LAYER_H });
+      pos.set(m, { x: u.x + i * (nodeSize.w + PARTNER_GAP), y: u.gen * LAYER_H });
       if (i) adjacent.push(pairKey(u.members[i - 1], m));
     });
   }
@@ -159,7 +160,7 @@ export function computeLayout(people, links) {
     let maxX = -Infinity;
     for (const p of result.pos.values()) {
       minX = Math.min(minX, p.x);
-      maxX = Math.max(maxX, p.x + NODE_W);
+      maxX = Math.max(maxX, p.x + nodeSize.w);
     }
     for (const [id, p] of result.pos) pos.set(id, { x: p.x - minX + cursor, y: p.y });
     cursor += maxX - minX + COMPONENT_GAP;

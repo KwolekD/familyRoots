@@ -34,7 +34,7 @@ App icon: `icons/` (SVG favicon, PNG touch/manifest icons) and `manifest.webmani
 
 ## Settings
 
-`theme`, `lang` (radio groups), `animate`, `showLegend`, `showStats`, `showZoom` (toggles) in the Settings tab, plus `sidebarOpen`, `sidebarTab`. `settingsPanel.apply()` hides the overlays, sets `body.no-motion` (kills CSS transitions) and `<html data-theme>`. `scene.js` reads `settings.animate` directly. A `lang` change re-renders all text; see [i18n-theme.md](i18n-theme.md).
+`theme`, `lang` (radio groups), `animate`, `fullNames`, `showLegend`, `showStats`, `showZoom` (toggles) in the Settings tab, plus `sidebarOpen`, `sidebarTab`. `settingsPanel.apply()` hides the overlays, sets `body.no-motion` (kills CSS transitions) and `<html data-theme>`. `scene.js` reads `settings.animate` directly. A `fullNames` change re-runs `relayout()` (card width changes; see [layout.md](layout.md)). A `lang` change re-renders all text; see [i18n-theme.md](i18n-theme.md).
 
 ## Event flow
 

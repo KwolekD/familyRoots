@@ -2,7 +2,7 @@ import { settings, setSettings, onSettings, defaultSettings } from '../state/set
 import { $ } from '../utils/dom.js';
 
 const form = $('#settings-form');
-const TOGGLES = ['animate', 'showLegend', 'showStats', 'showZoom'];
+const TOGGLES = ['animate', 'fullNames', 'showLegend', 'showStats', 'showZoom'];
 const CHOICES = ['theme', 'lang'];
 const darkQuery = matchMedia('(prefers-color-scheme: dark)');
 

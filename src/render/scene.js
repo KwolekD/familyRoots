@@ -1,8 +1,9 @@
-import { NODE_W, NODE_H, ANIM_MS, MAX_FIT_ZOOM } from '../config.js';
+import { NODE_H, ANIM_MS, MAX_FIT_ZOOM } from '../config.js';
+import { nodeSize } from '../layout/nodeSize.js';
 import { store } from '../state/store.js';
 import { settings } from '../state/settings.js';
 import { computeLayout } from '../layout/treeLayout.js';
-import { renderNodes, highlightSelection } from './nodes.js';
+import { renderNodes, highlightSelection, cardWidth } from './nodes.js';
 import { renderEdges } from './edges.js';
 import { $ } from '../utils/dom.js';
 
@@ -46,7 +47,7 @@ function fitView() {
   for (const p of layout.values()) {
     x0 = Math.min(x0, p.x);
     y0 = Math.min(y0, p.y);
-    x1 = Math.max(x1, p.x + NODE_W);
+    x1 = Math.max(x1, p.x + nodeSize.w);
     y1 = Math.max(y1, p.y + NODE_H);
   }
   // Keep the tree clear of the floating details card on wide screens.
@@ -92,6 +93,7 @@ function animateTo(targetView) {
 export function relayout({ fit = true, animate = true } = {}) {
   animate = animate && settings.animate;
   const { people, links } = store.state;
+  nodeSize.w = cardWidth(people);
   const result = computeLayout(people, links);
   layout = result.pos;
   adjacentPairs = result.adjacent;
