@@ -13,7 +13,7 @@ export const fullName = (p) => `${p.firstNames} ${p.surname}`.trim();
 
 export function familyNameLabel(p) {
   if (!p.familyName || p.familyName === p.surname) return '';
-  const prefix = p.gender === 'f' ? 'née' : p.gender === 'm' ? 'né' : 'born';
+  const prefix = p.gender === 'f' ? 'z domu' : p.gender === 'm' ? 'z domu' : 'born';
   return `${prefix} ${p.familyName}`;
 }
 
