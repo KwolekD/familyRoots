@@ -1,7 +1,10 @@
 export const STORAGE_KEY = 'family-tree-app.v1';
 export const SETTINGS_KEY = 'family-tree-app.settings.v1';
 
+export const THEMES = ['system', 'light', 'dark'];
+
 export const DEFAULT_SETTINGS = {
+  theme: 'system',
   animate: true,
   showLegend: true,
   showStats: true,

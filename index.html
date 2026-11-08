@@ -4,6 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Family Tree</title>
+  <script>
+    // Pick the theme before first paint so dark mode doesn't flash light. settingsPanel.js takes over after load.
+    try {
+      var theme = (JSON.parse(localStorage.getItem('family-tree-app.settings.v1')) || {}).theme;
+      var dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="styles/theme.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/sidebar.css">
   <link rel="stylesheet" href="styles/forms.css">
@@ -194,6 +203,14 @@
             <p>Saved in this browser.</p>
           </header>
           <form id="settings-form" class="settings">
+            <div class="choice">
+              <span><b>Theme</b><small>System follows your device setting</small></span>
+              <div class="line-type" role="radiogroup" aria-label="Theme">
+                <label class="chip"><input type="radio" name="theme" value="system"><span>System</span></label>
+                <label class="chip"><input type="radio" name="theme" value="light"><span>Light</span></label>
+                <label class="chip"><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+              </div>
+            </div>
             <label class="switch">
               <span><b>Animations</b><small>Smoothly move cards when the tree changes</small></span>
               <input type="checkbox" name="animate">
@@ -224,7 +241,7 @@
     <svg id="tree" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="shadow" x="-20%" y="-20%" width="140%" height="170%">
-          <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#1d2433" flood-opacity="0.10" />
+          <feDropShadow dx="0" dy="3" stdDeviation="5" />
         </filter>
       </defs>
       <g id="edges"></g>

@@ -69,7 +69,7 @@ legend {
   pointer-events: none;
 }
 
-.chip span {
+.chip > span {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,11 +84,11 @@ legend {
 
 .chip input:checked + span {
   border-color: var(--primary);
-  background: rgba(79, 107, 237, 0.08);
+  background: var(--primary-soft);
 }
 
 .chip input:focus-visible + span {
-  box-shadow: 0 0 0 3px rgba(79, 107, 237, 0.2);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .actions {
@@ -129,8 +129,33 @@ legend {
   color: var(--muted);
 }
 
-/* Settings toggles */
+/* Settings toggles and choices */
 .settings { gap: 4px; }
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 2px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.choice b,
+.switch b {
+  display: block;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.choice small,
+.switch small {
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+}
 
 .switch {
   flex-direction: row;
@@ -142,19 +167,6 @@ legend {
   cursor: pointer;
 }
 
-.switch b {
-  display: block;
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-.switch small {
-  display: block;
-  margin-top: 2px;
-  font-weight: 400;
-}
-
 .switch input {
   appearance: none;
   flex-shrink: 0;
@@ -164,7 +176,7 @@ legend {
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: #cfd5e2;
+  background: var(--switch-off);
   cursor: pointer;
   transition: background 0.15s;
 }

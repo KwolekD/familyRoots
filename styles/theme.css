@@ -1,0 +1,78 @@
+/* Color tokens. Other stylesheets use only these, never raw colors, so a theme is just a token set.
+   <html data-theme> is always "light" or "dark": "system" is resolved in JS (settingsPanel.js). */
+
+:root {
+  color-scheme: light;
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --surface: #ffffff;        /* inputs, buttons, cards */
+  --sidebar: #fbfcfe;
+  --border: #e3e7ef;
+  --text: #1d2433;
+  --muted: #6b7385;
+  --hover: #f2f4f9;
+  --disabled: #f3f4f7;
+  --primary: #4f6bed;
+  --primary-dark: #3d56cc;
+  --primary-soft: rgba(79, 107, 237, 0.1);
+  --focus-ring: rgba(79, 107, 237, 0.18);
+  --option-hover: #f7f8ff;
+  --danger: #d64545;
+  --danger-soft: #fdf0f0;
+  --danger-hover: #fdf7f7;
+  --danger-border: #f1c4c4;
+  --female: #e46f9b;
+  --male: #4f8fe8;
+  --neutral: #9aa3b5;
+  --line: #4a5468;
+  --grid-dot: #d7dce8;
+  --overlay: rgba(255, 255, 255, 0.92);
+  --card-deceased: #f6f7fa;
+  --card-hover: #a9b4d0;
+  --dates: #3d4558;
+  --dates-unknown: #a3a9b7;
+  --switch-off: #cfd5e2;
+  --toast-bg: #1d2433;
+  --toast-text: #ffffff;
+  --shadow: rgba(29, 36, 51, 0.12);
+  --shadow-flood: #1d2433;
+  --shadow-opacity: 0.1;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11141b;
+  --panel: #1a1e27;
+  --surface: #1d212b;
+  --sidebar: #151921;
+  --border: #2c3240;
+  --text: #e4e7ee;
+  --muted: #959db0;
+  --hover: #252a36;
+  --disabled: #191c24;
+  --primary: #7088f5;
+  --primary-dark: #5d76e8;
+  --primary-soft: rgba(112, 136, 245, 0.16);
+  --focus-ring: rgba(112, 136, 245, 0.3);
+  --option-hover: #222838;
+  --danger: #ef6b6b;
+  --danger-soft: #3a2226;
+  --danger-hover: #2c1f24;
+  --danger-border: #6e3539;
+  --female: #ec84ab;
+  --male: #6ba4f2;
+  --neutral: #7d879b;
+  --line: #a1aabd;
+  --grid-dot: #262b37;
+  --overlay: rgba(26, 30, 39, 0.92);
+  --card-deceased: #171a22;
+  --card-hover: #4b5672;
+  --dates: #c3c9d5;
+  --dates-unknown: #6b7385;
+  --switch-off: #3a4152;
+  --toast-bg: #e4e7ee;
+  --toast-text: #11141b;
+  --shadow: rgba(0, 0, 0, 0.45);
+  --shadow-flood: #000000;
+  --shadow-opacity: 0.35;
+}

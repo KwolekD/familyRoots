@@ -1,4 +1,6 @@
-import { SETTINGS_KEY, DEFAULT_SETTINGS } from '../config.js';
+import { SETTINGS_KEY, DEFAULT_SETTINGS, THEMES } from '../config.js';
+
+const ALLOWED = { theme: THEMES };
 
 // UI preferences, kept apart from the tree data so import/clear never touch them.
 export const settings = { ...DEFAULT_SETTINGS, ...read() };
@@ -20,9 +22,11 @@ export function setSettings(patch) {
 function read() {
   try {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
-    // Only keep known keys with the right type, so stale or edited storage can't break the UI.
+    // Only keep known keys with the right type (and value, for enums), so stale or edited storage can't break the UI.
     return Object.fromEntries(
-      Object.entries(saved).filter(([k, v]) => typeof v === typeof DEFAULT_SETTINGS[k]),
+      Object.entries(saved).filter(
+        ([k, v]) => typeof v === typeof DEFAULT_SETTINGS[k] && (!ALLOWED[k] || ALLOWED[k].includes(v)),
+      ),
     );
   } catch {
     return {};

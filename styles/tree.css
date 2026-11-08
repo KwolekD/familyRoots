@@ -9,6 +9,12 @@
 
 #tree.panning { cursor: grabbing; }
 
+/* Card shadow (filter defined in index.html) follows the theme. */
+#shadow feDropShadow {
+  flood-color: var(--shadow-flood);
+  flood-opacity: var(--shadow-opacity);
+}
+
 .link {
   fill: none;
   stroke: var(--line);
@@ -23,7 +29,7 @@
 }
 
 .partner-mark {
-  fill: #fff;
+  fill: var(--surface);
   stroke: var(--female);
   stroke-width: 2;
 }
@@ -31,21 +37,21 @@
 .node { cursor: pointer; }
 
 .node .card {
-  fill: #fff;
+  fill: var(--surface);
   stroke: var(--border);
   stroke-width: 1.2;
   filter: url(#shadow);
   transition: stroke 0.15s;
 }
 
-.node:hover .card { stroke: #a9b4d0; }
+.node:hover .card { stroke: var(--card-hover); }
 
 .node.selected .card {
   stroke: var(--primary);
   stroke-width: 2.5;
 }
 
-.node.deceased .card { fill: #f6f7fa; }
+.node.deceased .card { fill: var(--card-deceased); }
 
 .node .accent { fill: var(--neutral); }
 .node.f .accent { fill: var(--female); }
@@ -65,11 +71,11 @@
 
 .node .dates {
   font-size: 12px;
-  fill: #3d4558;
+  fill: var(--dates);
   font-variant-numeric: tabular-nums;
 }
 
-.node .dates.unknown { fill: #a3a9b7; }
+.node .dates.unknown { fill: var(--dates-unknown); }
 
 .node.new .inner { animation: pop-in 0.6s ease-out; }
 

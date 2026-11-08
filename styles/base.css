@@ -1,16 +1,5 @@
+/* Colors live in theme.css. */
 :root {
-  --bg: #f4f6fb;
-  --panel: #ffffff;
-  --border: #e3e7ef;
-  --text: #1d2433;
-  --muted: #6b7385;
-  --primary: #4f6bed;
-  --primary-dark: #3d56cc;
-  --danger: #d64545;
-  --female: #e46f9b;
-  --male: #4f8fe8;
-  --neutral: #9aa3b5;
-  --line: #4a5468;
   --radius: 12px;
   font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--text);
@@ -42,7 +31,7 @@ input, select {
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   font-weight: 400;
 }
@@ -50,23 +39,23 @@ input, select {
 input:focus, select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 107, 237, 0.15);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
-select:disabled { background: #f3f4f7; color: var(--muted); }
+select:disabled { background: var(--disabled); color: var(--muted); }
 
 button {
   cursor: pointer;
   padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
   font-weight: 500;
   transition: background 0.15s, border-color 0.15s;
 }
 
-button:hover { background: #f2f4f9; }
+button:hover { background: var(--hover); }
 
 button.primary {
   flex: 1;
@@ -78,7 +67,7 @@ button.primary {
 button.primary:hover { background: var(--primary-dark); }
 
 button.danger { color: var(--danger); }
-button.danger:hover { background: #fdf0f0; border-color: #f1c4c4; }
+button.danger:hover { background: var(--danger-soft); border-color: var(--danger-border); }
 
 /* Line samples used in forms, legend and details card */
 .ls {
