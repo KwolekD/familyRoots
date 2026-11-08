@@ -1,4 +1,14 @@
 export const STORAGE_KEY = 'family-tree-app.v1';
+export const SETTINGS_KEY = 'family-tree-app.settings.v1';
+
+export const DEFAULT_SETTINGS = {
+  animate: true,
+  showLegend: true,
+  showStats: true,
+  showZoom: true,
+  sidebarOpen: true,
+  sidebarTab: 'tree',
+};
 
 export const NODE_W = 200;
 export const NODE_H = 86;

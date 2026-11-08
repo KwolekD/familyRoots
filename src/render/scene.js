@@ -1,5 +1,6 @@
 import { NODE_W, NODE_H, ANIM_MS, MAX_FIT_ZOOM } from '../config.js';
 import { store } from '../state/store.js';
+import { settings } from '../state/settings.js';
 import { computeLayout } from '../layout/treeLayout.js';
 import { renderNodes, highlightSelection } from './nodes.js';
 import { renderEdges } from './edges.js';
@@ -67,8 +68,9 @@ function animateTo(targetView) {
   const v0 = { ...camera.view };
   const v1 = targetView || camera.view;
   const t0 = performance.now();
+  const duration = settings.animate ? ANIM_MS : 0;
   const step = (t) => {
-    const k = ease(Math.min(1, (t - t0) / ANIM_MS));
+    const k = duration ? ease(Math.min(1, (t - t0) / duration)) : 1;
     for (const [id, p] of layout) {
       const f = from.get(id);
       shown.set(id, { x: f.x + (p.x - f.x) * k, y: f.y + (p.y - f.y) * k });
@@ -88,6 +90,7 @@ function animateTo(targetView) {
 }
 
 export function relayout({ fit = true, animate = true } = {}) {
+  animate = animate && settings.animate;
   const { people, links } = store.state;
   const result = computeLayout(people, links);
   layout = result.pos;

@@ -6,121 +6,218 @@
   <title>Family Tree</title>
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/sidebar.css">
+  <link rel="stylesheet" href="styles/forms.css">
   <link rel="stylesheet" href="styles/canvas.css">
   <link rel="stylesheet" href="styles/tree.css">
   <link rel="stylesheet" href="styles/details.css">
   <script type="module" src="src/main.js"></script>
 </head>
 <body>
-  <aside class="sidebar">
-    <header class="brand">
+  <aside class="sidebar" id="sidebar">
+    <nav class="rail" aria-label="Sidebar">
       <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
         <circle cx="20" cy="8" r="5" />
         <circle cx="9" cy="31" r="5" />
         <circle cx="31" cy="31" r="5" />
         <path d="M20 13v8M9 26v-5h22v5" />
       </svg>
-      <div>
-        <h1>Family Tree</h1>
-        <p>Build and explore your family history</p>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab-btn" role="tab" data-tab="tree" title="Build the tree">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21c0-4 3-7 7-7s7 3 7 7M19 8v6M16 11h6" /></svg>
+          <span>Tree</span>
+        </button>
+        <button type="button" class="tab-btn" role="tab" data-tab="file" title="Import, export and reset">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+          <span>File</span>
+        </button>
+        <button type="button" class="tab-btn" role="tab" data-tab="settings" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1" /><circle cx="16" cy="6" r="2.5" /><circle cx="10" cy="12" r="2.5" /><circle cx="18" cy="18" r="2.5" /></svg>
+          <span>Settings</span>
+        </button>
       </div>
-    </header>
 
-    <section class="panel" id="person-panel">
-      <h2 id="form-title">Add person</h2>
-      <form id="person-form" autocomplete="off">
-        <label><span>First name(s) <span class="req">*</span></span>
-          <input name="firstNames" required placeholder="e.g. Jan Paweł">
-        </label>
-        <div class="row">
-          <label><span>Surname <span class="req">*</span></span>
-            <input name="surname" required placeholder="e.g. Kowalski">
-          </label>
-          <label>Family name
-            <input name="familyName" placeholder="birth / maiden">
-          </label>
-        </div>
-        <div class="row">
-          <label>Birth date
-            <input type="date" name="birth">
-          </label>
-          <label>Death date
-            <input type="date" name="death">
-          </label>
-        </div>
-        <label>Gender
-          <select name="gender">
-            <option value="">Unspecified</option>
-            <option value="f">Female</option>
-            <option value="m">Male</option>
-          </select>
-        </label>
+      <button type="button" class="collapse-btn" id="sidebar-toggle" title="Hide sidebar" aria-expanded="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+      </button>
+    </nav>
 
-        <fieldset id="connect-fieldset">
-          <legend>Connect to existing person</legend>
-          <div class="row">
-            <select name="relation" aria-label="Relation">
-              <option value="">No connection</option>
-              <option value="childOf">Child of</option>
-              <option value="parentOf">Parent of</option>
-              <option value="partnerOf">Partner of</option>
-            </select>
-            <select name="relative" aria-label="Relative" disabled></select>
+    <div class="drawer" id="drawer">
+      <div class="drawer-inner">
+
+        <!-- Tree tab: a menu of actions, each opening a single form -->
+        <section class="tab-panel" role="tabpanel" data-panel="tree">
+          <div class="view" data-view="menu">
+            <header class="panel-head">
+              <h2>Family Tree</h2>
+              <p>What would you like to do?</p>
+            </header>
+            <button type="button" class="option" data-goto="person">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4" /><path d="M2 21c0-4 3-7 7-7s7 3 7 7M19 8v6M16 11h6" /></svg>
+              <span><b>Add a person</b><small>Create a new card, optionally linked to a relative</small></span>
+            </button>
+            <button type="button" class="option" data-goto="link">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></svg>
+              <span><b>Connect two people</b><small>Link people who are already in the tree</small></span>
+            </button>
+            <p class="hint">Tip: click a card on the tree to see details, double-click to edit it.</p>
           </div>
-          <div id="also-parents"></div>
-          <div class="line-type" role="radiogroup" aria-label="Line type">
-            <label class="chip">
-              <input type="radio" name="blood" value="1" checked>
-              <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls blood" /></svg>Blood</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="blood" value="0">
-              <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls nonblood" /></svg>Not blood</span>
-            </label>
+
+          <div class="view" data-view="person" hidden>
+            <button type="button" class="back" data-goto="menu" id="person-back">&larr; Back</button>
+            <header class="panel-head">
+              <h2 id="form-title">Add person</h2>
+            </header>
+            <form id="person-form" autocomplete="off">
+              <label><span>First name(s) <span class="req">*</span></span>
+                <input name="firstNames" required placeholder="e.g. Jan Paweł">
+              </label>
+              <label><span>Surname <span class="req">*</span></span>
+                <input name="surname" required placeholder="e.g. Kowalski">
+              </label>
+              <div class="row">
+                <label>Birth date
+                  <input type="date" name="birth">
+                </label>
+                <label>Gender
+                  <select name="gender">
+                    <option value="">Unspecified</option>
+                    <option value="f">Female</option>
+                    <option value="m">Male</option>
+                  </select>
+                </label>
+              </div>
+
+              <button type="button" class="reveal" id="more-open">+ More details</button>
+              <fieldset id="more-fieldset" hidden>
+                <legend>More details</legend>
+                <label>Family name
+                  <input name="familyName" placeholder="birth / maiden">
+                </label>
+                <label>Death date
+                  <input type="date" name="death">
+                </label>
+              </fieldset>
+
+              <button type="button" class="reveal" id="connect-open">+ Connect to a relative</button>
+              <fieldset id="connect-fieldset" hidden>
+                <legend>Connection</legend>
+                <button type="button" class="fieldset-close" id="connect-close" title="No connection">&times;</button>
+                <div class="row">
+                  <select name="relation" aria-label="Relation">
+                    <option value="childOf">Child of</option>
+                    <option value="parentOf">Parent of</option>
+                    <option value="partnerOf">Partner of</option>
+                  </select>
+                  <select name="relative" aria-label="Relative"></select>
+                </div>
+                <div id="also-parents"></div>
+                <div class="line-type" role="radiogroup" aria-label="Line type">
+                  <label class="chip">
+                    <input type="radio" name="blood" value="1" checked>
+                    <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls blood" /></svg>Blood</span>
+                  </label>
+                  <label class="chip">
+                    <input type="radio" name="blood" value="0">
+                    <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls nonblood" /></svg>Not blood</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="actions">
+                <button type="submit" class="primary" id="submit-btn">Add to tree</button>
+                <button type="button" id="cancel-edit" hidden>Cancel</button>
+              </div>
+            </form>
           </div>
-        </fieldset>
 
-        <div class="actions">
-          <button type="submit" class="primary" id="submit-btn">Add to tree</button>
-          <button type="button" id="cancel-edit" hidden>Cancel</button>
-        </div>
-      </form>
-    </section>
+          <div class="view" data-view="link" hidden>
+            <button type="button" class="back" data-goto="menu">&larr; Back</button>
+            <header class="panel-head">
+              <h2>Connect two people</h2>
+            </header>
+            <form id="link-form">
+              <select name="a" aria-label="First person"></select>
+              <select name="type" aria-label="Relation">
+                <option value="parent">is parent of</option>
+                <option value="child">is child of</option>
+                <option value="partner">is partner of</option>
+              </select>
+              <select name="b" aria-label="Second person"></select>
+              <div class="line-type" role="radiogroup" aria-label="Line type">
+                <label class="chip">
+                  <input type="radio" name="blood" value="1" checked>
+                  <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls blood" /></svg>Blood</span>
+                </label>
+                <label class="chip">
+                  <input type="radio" name="blood" value="0">
+                  <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls nonblood" /></svg>Not blood</span>
+                </label>
+              </div>
+              <div class="actions">
+                <button type="submit" class="primary">Connect</button>
+              </div>
+            </form>
+            <p class="hint" id="link-hint">Add at least two people to connect them.</p>
+          </div>
+        </section>
 
-    <section class="panel" id="link-panel">
-      <h2>Connect people</h2>
-      <form id="link-form">
-        <select name="a" aria-label="First person"></select>
-        <select name="type" aria-label="Relation">
-          <option value="parent">is parent of</option>
-          <option value="child">is child of</option>
-          <option value="partner">is partner of</option>
-        </select>
-        <select name="b" aria-label="Second person"></select>
-        <div class="line-type" role="radiogroup" aria-label="Line type">
-          <label class="chip">
-            <input type="radio" name="blood" value="1" checked>
-            <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls blood" /></svg>Blood</span>
-          </label>
-          <label class="chip">
-            <input type="radio" name="blood" value="0">
-            <span><svg width="30" height="8"><line x1="2" y1="4" x2="28" y2="4" class="ls nonblood" /></svg>Not blood</span>
-          </label>
-        </div>
-        <div class="actions">
-          <button type="submit" class="primary">Connect</button>
-        </div>
-      </form>
-      <p class="hint" id="link-hint">Add at least two people to connect them.</p>
-    </section>
+        <!-- File tab -->
+        <section class="tab-panel" role="tabpanel" data-panel="file" hidden>
+          <header class="panel-head">
+            <h2>File</h2>
+            <p>Your tree is saved in this browser automatically.</p>
+          </header>
+          <button type="button" class="option" id="export-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></svg>
+            <span><b>Export JSON</b><small>Download a backup of your tree</small></span>
+          </button>
+          <button type="button" class="option" id="import-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" /></svg>
+            <span><b>Import JSON</b><small>Load a tree from a backup file</small></span>
+          </button>
+          <button type="button" class="option" id="demo-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5" /><circle cx="6" cy="18" r="2.5" /><circle cx="18" cy="18" r="2.5" /><path d="M12 7.5V12M6 15.5V12h12v3.5" /></svg>
+            <span><b>Load demo</b><small>Replace the tree with a sample family</small></span>
+          </button>
+          <button type="button" class="option danger" id="clear-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>
+            <span><b>Clear all</b><small>Remove everyone from the tree</small></span>
+          </button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
+        </section>
 
-    <section class="panel tools">
-      <button type="button" id="export-btn">Export JSON</button>
-      <button type="button" id="import-btn">Import JSON</button>
-      <button type="button" id="demo-btn">Load demo</button>
-      <button type="button" id="clear-btn" class="danger">Clear all</button>
-      <input type="file" id="import-file" accept=".json,application/json" hidden>
-    </section>
+        <!-- Settings tab -->
+        <section class="tab-panel" role="tabpanel" data-panel="settings" hidden>
+          <header class="panel-head">
+            <h2>Settings</h2>
+            <p>Saved in this browser.</p>
+          </header>
+          <form id="settings-form" class="settings">
+            <label class="switch">
+              <span><b>Animations</b><small>Smoothly move cards when the tree changes</small></span>
+              <input type="checkbox" name="animate">
+            </label>
+            <label class="switch">
+              <span><b>Line legend</b><small>Explain solid and dotted lines</small></span>
+              <input type="checkbox" name="showLegend">
+            </label>
+            <label class="switch">
+              <span><b>Statistics</b><small>Number of people and connections</small></span>
+              <input type="checkbox" name="showStats">
+            </label>
+            <label class="switch">
+              <span><b>Zoom buttons</b><small>Show + / &minus; / fit controls</small></span>
+              <input type="checkbox" name="showZoom">
+            </label>
+            <div class="actions">
+              <button type="button" id="settings-reset">Restore defaults</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+    </div>
   </aside>
 
   <main class="canvas">
@@ -138,15 +235,15 @@
 
     <div class="empty" id="empty" hidden>
       <h3>Your tree is empty</h3>
-      <p>Add the first person using the form on the left, or load the demo family.</p>
+      <p>Choose <b>Add a person</b> in the sidebar, or load the demo family from the <b>File</b> tab.</p>
     </div>
 
-    <div class="legend">
+    <div class="legend" id="legend">
       <div><svg width="40" height="8"><line x1="2" y1="4" x2="38" y2="4" class="ls blood" /></svg>Blood relation</div>
       <div><svg width="40" height="8"><line x1="2" y1="4" x2="38" y2="4" class="ls nonblood" /></svg>Not blood (partner, adoption, step)</div>
     </div>
 
-    <div class="zoom">
+    <div class="zoom" id="zoom">
       <button type="button" id="zoom-in" title="Zoom in">+</button>
       <button type="button" id="zoom-out" title="Zoom out">&minus;</button>
       <button type="button" id="zoom-fit" title="Fit tree to screen">&#x2922;</button>

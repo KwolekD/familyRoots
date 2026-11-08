@@ -5,6 +5,8 @@ import { initPersonForm, refreshPersonForm } from './ui/personForm.js';
 import { initLinkForm, refreshLinkForm } from './ui/linkForm.js';
 import { initDetails, renderDetails } from './ui/details.js';
 import { initToolbar } from './ui/toolbar.js';
+import { initSidebar } from './ui/sidebar.js';
+import { initSettingsPanel } from './ui/settingsPanel.js';
 import { initPanZoom } from './ui/panZoom.js';
 import { $ } from './utils/dom.js';
 
@@ -25,6 +27,8 @@ function refreshAll({ fit = true, animate = true } = {}) {
   updateStatus();
 }
 
+initSidebar();
+initSettingsPanel();
 initPersonForm();
 initLinkForm();
 initDetails();
