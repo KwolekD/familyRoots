@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#11141b" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Family Roots">
   <title>Family Roots</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <script>
     // Pick the theme before first paint so dark mode doesn't flash light. settingsPanel.js takes over after load.
     try {
@@ -19,6 +28,7 @@
   <link rel="stylesheet" href="styles/canvas.css">
   <link rel="stylesheet" href="styles/tree.css">
   <link rel="stylesheet" href="styles/details.css">
+  <link rel="stylesheet" href="styles/mobile.css">
   <script type="module" src="src/main.js"></script>
 </head>
 <body>

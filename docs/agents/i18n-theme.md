@@ -33,4 +33,5 @@ Adding a language: create `xx.js`, register it in `DICTS` (`i18n/index.js`), add
 - `settings.theme`: `system | light | dark`. `settingsPanel.applyTheme()` always resolves it to `<html data-theme="light|dark">`, and listens to `prefers-color-scheme` changes for `system`. CSS only needs one dark palette.
 - All colors are tokens in `styles/theme.css`, with `:root` for light and `:root[data-theme="dark"]` for dark. Other stylesheets must use tokens, not raw colors. The only exception is white text or icons on accent fills.
 - The SVG card shadow color comes from the `--shadow-flood` / `--shadow-opacity` tokens, applied via CSS on `#shadow feDropShadow`.
+- `applyTheme()` also copies `--bg` into the `theme-color` metas so the phone status bar follows the app theme, not just the system one.
 - An inline script in `<head>` of `index.html` sets `data-theme` before first paint, so dark mode doesn't flash light. It duplicates the settings storage key. Update it if `SETTINGS_KEY` changes.

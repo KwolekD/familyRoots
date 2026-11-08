@@ -34,7 +34,7 @@ The app uses ES modules, so it has to be served over HTTP. Opening `index.html` 
 
 ## Usage
 
-- **Sidebar**: the icon rail on the left has three tabs: *Tree*, *File* and *Settings*. Click the open tab again, or the arrow at the bottom, to hide the sidebar.
+- **Sidebar**: the icon rail on the left has three tabs: *Tree*, *File* and *Settings*. Click the open tab again, or the arrow at the bottom, to hide the sidebar. On a phone the tabs move to a bottom bar and open as a sheet; pinch to zoom the tree. The app can be added to the home screen.
 - **Add a person**: *Tree* → *Add a person*. Use *+ More details* for family name and death date, and *+ Connect to a relative* to link the new person straight away.
 - **Connect two people**: *Tree* → *Connect two people*.
 - **Select**: click a person to open their details card. Press `Esc` to close it.

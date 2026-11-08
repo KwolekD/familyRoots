@@ -1,11 +1,14 @@
 import { settings, setSettings } from '../state/settings.js';
 import { $ } from '../utils/dom.js';
 import { t } from '../i18n/index.js';
+import { on } from '../state/store.js';
+import { MOBILE_QUERY } from '../config.js';
 
 const sidebar = $('#sidebar');
 const toggleBtn = $('#sidebar-toggle');
 const tabButtons = [...sidebar.querySelectorAll('[data-tab]')];
 const panels = [...sidebar.querySelectorAll('[data-panel]')];
+const mobile = matchMedia(MOBILE_QUERY);
 
 function render() {
   const open = settings.sidebarOpen;
@@ -51,6 +54,13 @@ export function initSidebar() {
   sidebar.addEventListener('click', (e) => {
     const t = e.target.closest('[data-goto]');
     if (t) showView(t.dataset.goto);
+  });
+  // On phones the sheet covers the tree: tapping the tree or finishing an action closes it.
+  $('.canvas').addEventListener('pointerdown', () => {
+    if (mobile.matches && settings.sidebarOpen) setSidebarOpen(false);
+  });
+  on('change', () => {
+    if (mobile.matches && settings.sidebarOpen) setSidebarOpen(false);
   });
   render();
 }

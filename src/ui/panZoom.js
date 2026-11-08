@@ -10,6 +10,9 @@ const DRAG_THRESHOLD = 4;
 
 let drag = null;
 let lastClick = { id: null, t: 0 };
+// Pointers currently down, for two-finger pinch zoom.
+const pointers = new Map();
+let pinch = null;
 
 function zoomAt(px, py, factor) {
   const s = svgSize();
@@ -32,8 +35,33 @@ const zoomCenter = (factor) => {
   zoomAt(v.x + v.w / 2, v.y + v.h / 2, factor);
 };
 
+function pinchState() {
+  const [a, b] = [...pointers.values()];
+  return { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+}
+
+// Pans by the midpoint's movement, then zooms around it by the change in finger distance.
+function onPinchMove() {
+  const next = pinchState();
+  const s = svgSize();
+  const v = camera.view;
+  camera.view = { ...v, x: v.x - ((next.x - pinch.x) * v.w) / s.w, y: v.y - ((next.y - pinch.y) * v.h) / s.h };
+  zoomAt(...toSvg(next.x, next.y), pinch.dist / next.dist);
+  pinch = next;
+}
+
 function onPointerDown(e) {
   if (e.button !== 0) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  svg.setPointerCapture(e.pointerId);
+  if (pointers.size === 2) {
+    // A second finger turns the gesture into a pinch; it never counts as a click.
+    drag = null;
+    svg.classList.remove('panning');
+    pinch = pinchState();
+    return;
+  }
+  if (pointers.size > 2) return;
   drag = {
     sx: e.clientX,
     sy: e.clientY,
@@ -42,10 +70,12 @@ function onPointerDown(e) {
     moved: false,
     nodeId: e.target.closest('.node')?.dataset.id || null,
   };
-  svg.setPointerCapture(e.pointerId);
 }
 
 function onPointerMove(e) {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch) return onPinchMove();
   if (!drag) return;
   const dx = e.clientX - drag.sx;
   const dy = e.clientY - drag.sy;
@@ -61,6 +91,12 @@ function onPointerMove(e) {
 
 // Clicks are resolved here because pointer capture retargets the native click event.
 function onPointerEnd(e) {
+  pointers.delete(e.pointerId);
+  // Lifting one finger after a pinch doesn't resume panning, which would make the view jump.
+  if (pinch) {
+    if (pointers.size < 2) pinch = null;
+    return;
+  }
   if (!drag) return;
   svg.classList.remove('panning');
   if (!drag.moved && e.type === 'pointerup') {

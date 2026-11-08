@@ -10,6 +10,9 @@ const darkQuery = matchMedia('(prefers-color-scheme: dark)');
 function applyTheme() {
   const dark = settings.theme === 'dark' || (settings.theme === 'system' && darkQuery.matches);
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  // Browser/status bar follows the app theme, not just the system one the meta media queries see.
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  for (const m of document.querySelectorAll('meta[name=theme-color]')) m.content = bg;
 }
 
 function apply() {

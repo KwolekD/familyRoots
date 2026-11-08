@@ -1,0 +1,123 @@
+/* Phone layout: the rail becomes a bottom tab bar and the drawer a sheet sliding up over the tree.
+   The breakpoint is duplicated as MOBILE_QUERY in src/config.js; keep them in sync. */
+
+@media (max-width: 700px) {
+  html, body { height: 100dvh; }
+
+  body {
+    flex-direction: column-reverse;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* iOS zooms into inputs with text under 16px. */
+  input, select { font-size: 16px; }
+
+  .sidebar {
+    position: relative;
+    z-index: 20;
+    height: auto;
+    border-right: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Above the sheet, so the sheet slides in and out from behind the tab bar. */
+  .rail {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+    padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
+    border-right: 0;
+  }
+
+  .logo { display: none; }
+
+  .tabs {
+    flex-direction: row;
+    flex: 1;
+    justify-content: space-around;
+  }
+
+  .tab-btn,
+  .collapse-btn { width: 72px; }
+
+  .collapse-btn { margin-top: 0; }
+  .collapse-btn svg { transform: rotate(-90deg); }
+  .sidebar.collapsed .collapse-btn svg { transform: rotate(90deg); }
+
+  /* Sheet above the tab bar, overlaying the canvas so the tree doesn't resize. */
+  .drawer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    width: auto;
+    max-height: min(70dvh, 560px);
+    border-top: 1px solid var(--border);
+    border-radius: 18px 18px 0 0;
+    background: var(--sidebar);
+    box-shadow: 0 -12px 32px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, visibility 0.25s;
+  }
+
+  .sidebar.collapsed .drawer {
+    width: auto;
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+
+  .drawer-inner {
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 18px 16px 20px;
+  }
+
+  /* Grab handle hint at the top of the sheet. */
+  .drawer::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 2px;
+    background: var(--border);
+  }
+
+  .canvas { flex: 1; min-height: 0; }
+
+  .stats { top: calc(10px + env(safe-area-inset-top)); left: 10px; }
+
+  .legend {
+    left: 10px;
+    bottom: 10px;
+    padding: 8px 10px;
+    font-size: 11.5px;
+  }
+
+  .zoom { right: 10px; bottom: 10px; }
+  .zoom button { width: 44px; height: 44px; }
+
+  .empty { padding: 0 24px; }
+
+  .toast { max-width: calc(100% - 32px); bottom: 16px; }
+
+  /* Details become a bottom card; hidden while the sheet is open so they don't stack. */
+  .details {
+    top: auto;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    max-height: 55%;
+  }
+
+  .sidebar:not(.collapsed) ~ .canvas .details { display: none; }
+
+  .quick button,
+  .details .footer button { padding: 10px 4px; }
+}

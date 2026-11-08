@@ -58,8 +58,8 @@ export default {
   'rel.partnerOf': 'Partner(ka) osoby',
 
   'line.type': 'Rodzaj linii',
-  'line.blood': 'Krew',
-  'line.nonblood': 'Nie krew',
+  'line.blood': 'Spokrewniona',
+  'line.nonblood': 'Niespokrewniona',
 
   'link.title': 'Połącz dwie osoby',
   'link.first': 'Pierwsza osoba',
@@ -158,7 +158,7 @@ export default {
   'err.self': 'Osoby nie można połączyć z nią samą.',
   'err.alreadyConnected': '{a} i {b} są już połączeni.',
   'err.ancestorChild': '{b} jest przodkiem osoby {a}, więc nie może być jej dzieckiem.',
-  'err.twoBloodParents': '{b} ma już dwoje rodziców biologicznych. Użyj linii kropkowanej (nie krew).',
+  'err.twoBloodParents': '{b} ma już dwoje rodziców biologicznych. Użyj linii kropkowanej (niespokrewniona).',
   'err.ancestorPartner': 'Przodek i potomek nie mogą być partnerami w drzewie.',
   'err.generations': 'To powiązanie spowodowałoby niespójność pokoleń.',
   'err.toggleTwoBlood': 'Ta osoba ma już dwoje rodziców biologicznych.',

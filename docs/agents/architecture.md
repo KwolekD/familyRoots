@@ -15,7 +15,7 @@
 | `src/render/` | `scene.js` (camera, animation, relayout), `nodes.js` (person cards), `edges.js` (connector paths), `png.js` (PNG export). |
 | `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export JSON/PNG, import, clear), `panZoom`, `toast`, `formHelpers`. |
 | `src/utils/` | `dates` (parse, long date, age), `dom` (`$`), `format` (`uid`, `pairKey`, `esc`, `fullName`, labels). |
-| `styles/` | `theme.css` (light/dark color tokens), then one CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details. |
+| `styles/` | `theme.css` (light/dark color tokens), then one CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details, and last `mobile.css` (phone overrides). |
 
 ## Sidebar
 
@@ -25,6 +25,12 @@ The UI rule is *one thing at a time*: show a choice first, and fields only after
 - The Tree tab has views (`data-view="menu" | "person" | "link"`). Any element with `data-goto="<view>"` switches view. Call `showView(name)` from code; it also opens the sidebar and the Tree tab. `startAdd` / `startEdit` use it.
 - In the person form, the optional fields (`#more-fieldset`) and the quick-connect fields (`#connect-fieldset`) stay hidden behind "+ ..." buttons. A connection is only created when `#connect-fieldset` is open.
 - Leaving the person form via Back or Cancel calls `exitEdit()` (resets the form).
+
+## Phone layout
+
+`styles/mobile.css` (≤ 700px, mirrored as `MOBILE_QUERY` in config.js) turns the rail into a bottom tab bar and the drawer into a sheet that slides up over the canvas, so the tree never resizes. The details card becomes a bottom card and is hidden while the sheet is open. `sidebar.js` closes the sheet on phones when the canvas is tapped or the store emits `change` (an action finished), so the result is visible.
+
+App icon: `icons/` (SVG favicon, PNG touch/manifest icons) and `manifest.webmanifest`. The PNGs are renders of `icon.svg`; regenerate them if it changes.
 
 ## Settings
 
@@ -54,7 +60,7 @@ In `refreshAll`, `renderDetails()` runs **before** `relayout()` because `fitView
 ## Interaction
 
 - Click card → `select`. Double-click (manual timing in `panZoom.js`, 350 ms) → `startEdit`.
-- Drag on the canvas pans. A drag threshold of 4px separates drags from clicks. Wheel zooms around the cursor.
+- Drag on the canvas pans. A drag threshold of 4px separates drags from clicks. Wheel zooms around the cursor. Two-finger pinch zooms around the midpoint and pans with it; it never counts as a click.
 - User pan/zoom sets `camera.locked` so a running animation stops moving the camera.
 - `Esc` (outside inputs) deselects.
 - Details card buttons: add parent/partner/child (`startAdd`), edit, delete, toggle blood, unlink.
