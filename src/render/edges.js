@@ -1,13 +1,13 @@
-import { NODE_H, V_GAP } from '../config.js';
+import { NODE_H } from '../config.js';
 import { nodeSize } from '../layout/nodeSize.js';
 import { pairKey } from '../utils/format.js';
+import { assignLanes } from './lanes.js';
 
 const pathOf = (d, blood) => `<path class="link ${blood ? 'blood' : 'nonblood'}" d="${d}"/>`;
 const partnerMark = (x, y) => `<circle class="partner-mark" cx="${x}" cy="${y}" r="5"/>`;
 
-// Orthogonal parent -> child connector with rounded corners.
-function elbow(sx, sy, cx, cy) {
-  let my = cy - V_GAP / 2;
+// Orthogonal parent -> child connector with rounded corners, horizontal run at height `my`.
+function elbow(sx, sy, cx, cy, my) {
   if (my <= sy) my = (sy + cy) / 2;
   const dx = cx - sx;
   if (Math.abs(dx) < 0.5) return `M${sx} ${sy}V${cy}`;
@@ -36,8 +36,9 @@ function partnerEdges(links, pos, adjacent, out, marks) {
   }
 }
 
-// Children of a side-by-side couple hang from the middle of the partner line.
-function parentEdges(links, pos, adjacent, out) {
+// Every parent -> child connector as { sx, sy, cx, cy, blood }. Children of a side-by-side
+// couple hang from the middle of the partner line.
+function parentSegments(links, pos, adjacent) {
   const byChild = new Map();
   for (const l of links) {
     if (l.type !== 'parent') continue;
@@ -45,6 +46,7 @@ function parentEdges(links, pos, adjacent, out) {
     byChild.get(l.b).push(l);
   }
 
+  const segs = [];
   for (const [childId, ls] of byChild) {
     const c = pos.get(childId);
     if (!c) continue;
@@ -59,14 +61,31 @@ function parentEdges(links, pos, adjacent, out) {
         if (!A || !B) continue;
         used.add(i);
         used.add(j);
-        out.push(pathOf(elbow((A.x + B.x) / 2 + nodeSize.w / 2, Math.max(A.y, B.y) + NODE_H / 2, cx, c.y), ls[i].blood));
+        segs.push({ sx: (A.x + B.x) / 2 + nodeSize.w / 2, sy: Math.max(A.y, B.y) + NODE_H / 2, cx, cy: c.y, blood: ls[i].blood });
       }
     }
     ls.forEach((l, i) => {
       if (used.has(i)) return;
       const A = pos.get(l.a);
-      if (A) out.push(pathOf(elbow(A.x + nodeSize.w / 2, A.y + NODE_H, cx, c.y), l.blood));
+      if (A) segs.push({ sx: A.x + nodeSize.w / 2, sy: A.y + NODE_H, cx, cy: c.y, blood: l.blood });
     });
+  }
+  return segs;
+}
+
+// Connectors from the same source point into the same row form one family and share a lane.
+function parentEdges(links, pos, adjacent, out) {
+  const groups = new Map();
+  for (const s of parentSegments(links, pos, adjacent)) {
+    const key = `${Math.round(s.sx)},${Math.round(s.sy)},${Math.round(s.cy)}`;
+    if (!groups.has(key)) groups.set(key, { sx: s.sx, sy: s.sy, cy: s.cy, xs: [], segs: [] });
+    const g = groups.get(key);
+    g.xs.push(s.cx);
+    g.segs.push(s);
+  }
+  assignLanes([...groups.values()]);
+  for (const g of groups.values()) {
+    for (const s of g.segs) out.push(pathOf(elbow(s.sx, s.sy, s.cx, s.cy, g.my), s.blood));
   }
 }
 

@@ -29,6 +29,11 @@ export const PARTNER_GAP = 64;
 export const V_GAP = 110;
 export const LAYER_H = NODE_H + V_GAP;
 export const COMPONENT_GAP = 140;
+// Parent->child connectors of different families that overlap horizontally get separate heights
+// inside the V_GAP band, keeping this distance from the cards above and below.
+export const EDGE_LANE_PAD = 22;
+// Horizontal runs closer than this count as overlapping (leaves room for the rounded corners).
+export const EDGE_LANE_MARGIN = 24;
 
 export const ANIM_MS = 700;
 export const MAX_ZOOM = 2.5;

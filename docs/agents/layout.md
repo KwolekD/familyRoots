@@ -30,7 +30,8 @@ Components are laid out left to right, separated by `COMPONENT_GAP`. `adjacent` 
 ## Edges (src/render/edges.js)
 
 - Adjacent partners: straight horizontal line plus a circle marker. Non-adjacent partners: a curve arching above the cards.
-- Parent → child: orthogonal "elbow" path with rounded corners, turning halfway through the vertical gap.
+- Parent → child: orthogonal "elbow" path with rounded corners. Connectors from the same source point into the same row form one family and share one horizontal run.
+- **Lanes** ([src/render/lanes.js](../../src/render/lanes.js)): a family's run sits halfway through the vertical gap. When runs of different families overlap horizontally (within `EDGE_LANE_MARGIN`), each family gets its own height ("lane"), spaced evenly inside `V_GAP` minus `EDGE_LANE_PAD` at each end. Otherwise neighbouring sibling groups merge into one line and look like siblings. Lanes are recomputed every frame.
 - If both parents are adjacent partners and share the same `blood` value, a single line drops from the middle of their partner line. Otherwise each parent gets its own line from the bottom of their card.
 - Solid vs dotted lines come from the CSS classes `.blood` / `.nonblood` in `styles/tree.css`.
 
