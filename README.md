@@ -6,7 +6,7 @@ No framework and no build step: plain HTML, CSS and JavaScript (ES modules), dra
 
 ## Features
 
-- Add and edit people: first names, surname, family (birth/maiden) name, birth and death dates, gender
+- Add and edit people: first names, surname, family (birth/maiden) name, birth and death dates (full date, month and year, or just the year), gender
 - Connect people as **parent / child** or **partner**, either while adding a person or afterwards
 - Mark each connection as **blood** (solid line) or **not blood** (dotted line, e.g. partner, adoption, step-parent)
 - Automatic generational layout, with partners placed side by side

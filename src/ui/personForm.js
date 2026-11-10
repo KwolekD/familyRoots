@@ -6,10 +6,13 @@ import { fillPeopleSelects, setBlood, getBlood } from './formHelpers.js';
 import { showView } from './sidebar.js';
 import { toast } from './toast.js';
 import { t } from '../i18n/index.js';
+import { compareDates } from '../utils/dates.js';
+import { readDate, writeDate, renderMonthOptions } from './dateField.js';
 
 const form = $('#person-form');
 const fields = form.elements;
-const PERSON_FIELDS = ['firstNames', 'surname', 'familyName', 'birth', 'death', 'gender'];
+const PERSON_FIELDS = ['firstNames', 'surname', 'familyName', 'gender'];
+const DATE_FIELDS = { birth: $('#birth-field'), death: $('#death-field') };
 let editingId = null;
 // Set when adding a relative from the details card, so the heading can name them.
 let addFor = null;
@@ -42,6 +45,7 @@ const connecting = () => !$('#connect-fieldset').hidden;
 export function refreshPersonForm() {
   if (editingId && !byId(editingId)) exitEdit();
   fillPeopleSelects([fields.relative], store.state.people);
+  Object.values(DATE_FIELDS).forEach(renderMonthOptions);
   setConnectOpen(connecting());
   renderHeading();
 }
@@ -86,6 +90,7 @@ export function startEdit(id) {
   if (!p) return;
   editingId = id;
   for (const key of PERSON_FIELDS) fields[key].value = p[key] || '';
+  for (const [key, el] of Object.entries(DATE_FIELDS)) writeDate(el, p[key]);
   renderHeading();
   $('#cancel-edit').hidden = false;
   setMoreOpen(!!(p.familyName || p.death));
@@ -109,10 +114,18 @@ function readPerson() {
     firstNames: fields.firstNames.value.trim(),
     surname: fields.surname.value.trim(),
     familyName: fields.familyName.value.trim(),
-    birth: fields.birth.value,
-    death: fields.death.value,
     gender: fields.gender.value,
   };
+}
+
+// Returns an error message, or null after copying the dates into `data`.
+function readDates(data) {
+  for (const [key, el] of Object.entries(DATE_FIELDS)) {
+    const { value, error } = readDate(el);
+    if (error) return t(error, { field: t(`person.${key}`) });
+    data[key] = value;
+  }
+  return null;
 }
 
 function connectNewPerson(person) {
@@ -139,7 +152,9 @@ function onSubmit(e) {
   e.preventDefault();
   const data = readPerson();
   if (!data.firstNames || !data.surname) return toast(t('person.required'), 'error');
-  if (data.birth && data.death && data.death < data.birth) {
+  const dateError = readDates(data);
+  if (dateError) return toast(dateError, 'error');
+  if (compareDates(data.death, data.birth) < 0) {
     return toast(t('person.deathBeforeBirth'), 'error');
   }
 

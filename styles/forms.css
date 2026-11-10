@@ -15,6 +15,24 @@ label {
 
 .req { color: var(--danger); }
 
+/* Same look as a label, but a group: it holds three controls. */
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.date-parts {
+  display: grid;
+  grid-template-columns: 3.6em minmax(0, 1fr) 4.6em;
+  gap: 6px;
+}
+
+.date-parts input { text-align: center; }
+
 .row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

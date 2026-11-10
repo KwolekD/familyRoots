@@ -10,7 +10,7 @@ state = {
 ```
 
 - `id`: string. New ones come from `uid()` (time + random).
-- `birth` / `death`: `YYYY-MM-DD` strings from `<input type="date">`, or `''`.
+- `birth` / `death`: `YYYY`, `YYYY-MM` or `YYYY-MM-DD` strings (day and month are optional), or `''`. Entered via the day/month/year group in `src/ui/dateField.js`. Code reading dates must go through `parseDate()` (missing parts are `null`) and compare with `compareDates()`, which ignores parts only one side has. `ageOf()` returns a `"72–73"` range string when the precision cannot decide.
 - `gender`: `'f' | 'm' | ''`.
 - `familyName`: birth/maiden name. Shown via `familyNameLabel()` only when it differs from `surname`.
 - `link.type === 'parent'`: `a` is a parent of `b`.

@@ -96,18 +96,22 @@
               <label><span><span data-i18n="person.surname">Surname</span> <span class="req">*</span></span>
                 <input name="surname" required placeholder="e.g. Kowalski" data-i18n-placeholder="person.surname.ph">
               </label>
-              <div class="row">
-                <label><span data-i18n="person.birth">Birth date</span>
-                  <input type="date" name="birth">
-                </label>
-                <label><span data-i18n="person.gender">Gender</span>
-                  <select name="gender">
-                    <option value="" data-i18n="gender.unspecified">Unspecified</option>
-                    <option value="f" data-i18n="gender.f">Female</option>
-                    <option value="m" data-i18n="gender.m">Male</option>
-                  </select>
-                </label>
+              <!-- Day and month are optional: old records often give only a year. -->
+              <div class="date-field" id="birth-field" role="group" aria-labelledby="birth-label">
+                <span id="birth-label" data-i18n="person.birth">Birth date</span>
+                <div class="date-parts">
+                  <input data-part="d" inputmode="numeric" maxlength="2" placeholder="DD" aria-label="Day" data-i18n-placeholder="date.day.ph" data-i18n-aria="date.day">
+                  <select data-part="m" aria-label="Month" data-i18n-aria="date.month"><option value="">Month</option></select>
+                  <input data-part="y" inputmode="numeric" maxlength="4" placeholder="YYYY" aria-label="Year" data-i18n-placeholder="date.year.ph" data-i18n-aria="date.year">
+                </div>
               </div>
+              <label><span data-i18n="person.gender">Gender</span>
+                <select name="gender">
+                  <option value="" data-i18n="gender.unspecified">Unspecified</option>
+                  <option value="f" data-i18n="gender.f">Female</option>
+                  <option value="m" data-i18n="gender.m">Male</option>
+                </select>
+              </label>
 
               <button type="button" class="reveal" id="more-open" data-i18n="person.moreOpen">+ More details</button>
               <fieldset id="more-fieldset" hidden>
@@ -115,9 +119,14 @@
                 <label><span data-i18n="person.familyName">Family name</span>
                   <input name="familyName" placeholder="birth / maiden" data-i18n-placeholder="person.familyName.ph">
                 </label>
-                <label><span data-i18n="person.death">Death date</span>
-                  <input type="date" name="death">
-                </label>
+                <div class="date-field" id="death-field" role="group" aria-labelledby="death-label">
+                  <span id="death-label" data-i18n="person.death">Death date</span>
+                  <div class="date-parts">
+                    <input data-part="d" inputmode="numeric" maxlength="2" placeholder="DD" aria-label="Day" data-i18n-placeholder="date.day.ph" data-i18n-aria="date.day">
+                    <select data-part="m" aria-label="Month" data-i18n-aria="date.month"><option value="">Month</option></select>
+                    <input data-part="y" inputmode="numeric" maxlength="4" placeholder="YYYY" aria-label="Year" data-i18n-placeholder="date.year.ph" data-i18n-aria="date.year">
+                  </div>
+                </div>
               </fieldset>
 
               <button type="button" class="reveal" id="connect-open" data-i18n="person.connectOpen">+ Connect to a relative</button>
