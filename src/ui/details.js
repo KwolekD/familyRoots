@@ -65,23 +65,23 @@ export function renderDetails() {
 }
 
 function onClick(e) {
-  const t = e.target.closest('[data-action],[data-go],[data-toggle],[data-unlink]');
-  if (!t) return;
+  const el = e.target.closest('[data-action],[data-go],[data-toggle],[data-unlink]');
+  if (!el) return;
   e.preventDefault();
   const p = byId(store.selectedId);
 
-  if (t.dataset.go) return select(t.dataset.go);
-  if (t.dataset.toggle) {
-    const err = toggleLinkBlood(t.dataset.toggle);
+  if (el.dataset.go) return select(el.dataset.go);
+  if (el.dataset.toggle) {
+    const err = toggleLinkBlood(el.dataset.toggle);
     if (err) return toast(err, 'error');
     return commit({ fit: false });
   }
-  if (t.dataset.unlink) {
-    removeLink(t.dataset.unlink);
+  if (el.dataset.unlink) {
+    removeLink(el.dataset.unlink);
     return commit();
   }
 
-  switch (t.dataset.action) {
+  switch (el.dataset.action) {
     case 'close':
       return select(null);
     case 'edit':
