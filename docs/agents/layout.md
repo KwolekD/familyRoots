@@ -24,6 +24,10 @@ Per connected component:
 2. **Units**: a chain of same-row partners drawn side by side as one block. The chain is walked from its lowest-degree end.
 3. **Sweeps** (12): a down pass pulls units toward the mean x of their parents, then an up pass pulls them toward the mean x of their children. During the first 6 sweeps, rows are re-sorted by desired x, and a couple is flipped if that puts each partner nearer their own relatives.
 4. **`placeRow`**: resolves overlaps by averaging a forward pass (push right) and a backward pass (push left), then enforces `H_GAP`.
+5. **Untangle** ([untangle.js](../../src/layout/untangle.js), runs once, after the reorder sweeps): rows are regrouped so each family's children are contiguous and ordered like their sources, and couples linking two families face their own parents. Then a greedy local search (flip a couple, or move a conflicting unit to any slot in its row, regroup, keep if fewer families interleave), capped at `UNTANGLE_MS`. Works on row order only, not x.
+6. **Separate** ([separate.js](../../src/layout/separate.js)): every pair of neighbouring families in a gap (sorted by source x) must keep `FAMILY_GAP` between their spans (source + all children). These are difference constraints between units, added one family pair at a time and solved by pushing units right; a pair that would contradict earlier ones (positive cycle) is skipped. Then re-centering sweeps move each unit toward its relatives only within its constraint slack.
+
+A *family* here matches the edge renderer's grouping (one source point → one row); keep `families()` in sync with `parentSegments()` in edges.js. Some trees can't be made overlap-free (e.g. three siblings who each married someone whose parents are in the tree: only two can sit at the ends of the sibling group); lanes handle what's left.
 
 Components are laid out left to right, separated by `COMPONENT_GAP`. `adjacent` lists partner pairs placed next to each other. Edge drawing depends on it.
 

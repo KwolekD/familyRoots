@@ -41,7 +41,7 @@ The app uses ES modules, so it has to be served over HTTP. Opening `index.html` 
 - **Edit**: double-click a person, or use the details card.
 - **Navigate**: drag to pan, scroll to zoom, or use the `+` / `−` / fit buttons.
 - **Data**: *Export JSON*, *Export PNG*, *Import JSON* and *Clear all* are in the *File* tab.
-- **Settings**: pick the theme (system / light / dark) and language (English / Polski), and turn animations, the line legend, the statistics badge and the zoom buttons on or off.
+- **Settings**: pick the theme (system / light / dark) and language (English / Polski), and turn animations, full names, the line legend, the statistics badge and the zoom buttons on or off.
 
 ## Project structure
 

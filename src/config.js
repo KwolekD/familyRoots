@@ -29,6 +29,11 @@ export const PARTNER_GAP = 64;
 export const V_GAP = 110;
 export const LAYER_H = NODE_H + V_GAP;
 export const COMPONENT_GAP = 140;
+// Minimum horizontal distance between the connector spans of two families in the same gap
+// (must exceed EDGE_LANE_MARGIN so separated families don't need lanes).
+export const FAMILY_GAP = 44;
+// Time budget for reordering rows to untangle families (per connected group of people).
+export const UNTANGLE_MS = 120;
 // Parent->child connectors of different families that overlap horizontally get separate heights
 // inside the V_GAP band, keeping this distance from the cards above and below.
 export const EDGE_LANE_PAD = 22;

@@ -3,6 +3,8 @@ import { nodeSize } from './nodeSize.js';
 import { buildIndex, components } from '../model/graph.js';
 import { assignGenerations } from './generations.js';
 import { pairKey } from '../utils/format.js';
+import { separateFamilies } from './separate.js';
+import { untangle } from './untangle.js';
 
 const SWEEPS = 12;
 const REORDER_SWEEPS = 6;
@@ -80,7 +82,7 @@ function placeRow(row) {
   }
 }
 
-function layoutComponent(ids, idx, insertion) {
+function layoutComponent(ids, idx, insertion, links) {
   const { gen } = assignGenerations(ids, idx);
   const order = initialOrder(ids, idx, insertion);
   const { units, unitOf } = buildUnits(ids, idx, gen, order);
@@ -101,13 +103,29 @@ function layoutComponent(ids, idx, insertion) {
     return unit.x + offset(i);
   };
 
+  // Per member: the mean centre x of its relatives in `rel` (null if none).
+  const targetsOf = (u, rel) =>
+    u.members.map((m) => {
+      const ns = idx.get(m)[rel];
+      return ns.length ? ns.reduce((s, n) => s + centerOf(n), 0) / ns.length : null;
+    });
+  // Unit x that puts its members closest to their targets on average.
+  const desiredOf = (targets) => {
+    let sum = 0;
+    let cnt = 0;
+    targets.forEach((t, i) => {
+      if (t !== null) {
+        sum += t - offset(i) + nodeSize.w / 2;
+        cnt++;
+      }
+    });
+    return cnt ? sum / cnt : null;
+  };
+
   // Pulls each unit towards the average position of its relatives in `rel`.
   const sweep = (row, rel, reorder) => {
     for (const u of row) {
-      const targets = u.members.map((m) => {
-        const ns = idx.get(m)[rel];
-        return ns.length ? ns.reduce((s, n) => s + centerOf(n), 0) / ns.length : null;
-      });
+      const targets = targetsOf(u, rel);
       const first = targets[0];
       const last = targets[targets.length - 1];
       if (reorder && u.members.length > 1 && first !== null && last !== null && first > last + 1) {
@@ -115,24 +133,31 @@ function layoutComponent(ids, idx, insertion) {
         targets.reverse();
         u.members.forEach((m, i) => (unitOf.get(m).i = i));
       }
-      let sum = 0;
-      let cnt = 0;
-      targets.forEach((t, i) => {
-        if (t !== null) {
-          sum += t - offset(i) + nodeSize.w / 2;
-          cnt++;
-        }
-      });
-      u.desired = cnt ? sum / cnt : u.x;
+      u.desired = desiredOf(targets) ?? u.x;
     }
     if (reorder) row.sort((a, b) => a.desired + a.w / 2 - (b.desired + b.w / 2));
     placeRow(row);
   };
 
+  const parentLinks = links.filter((l) => l.type === 'parent' && unitOf.has(l.a) && unitOf.has(l.b));
   for (let it = 0; it < SWEEPS; it++) {
     const reorder = it < REORDER_SWEEPS;
+    if (it === REORDER_SWEEPS) untangle(rows, units, unitOf, parentLinks, offset);
     for (let g = 1; g <= maxGen; g++) sweep(rows[g], 'parents', reorder);
     for (let g = maxGen - 1; g >= 0; g--) sweep(rows[g], 'children', reorder);
+  }
+
+  // Pull families apart so no two connectors overlap, then re-centre within what that allows.
+  const cons = separateFamilies(rows, units, unitOf, parentLinks, offset);
+  const nudge = (row, rel) => {
+    for (const u of row) {
+      const d = desiredOf(targetsOf(u, rel));
+      if (d !== null) cons.nudge(u, d);
+    }
+  };
+  for (let it = 0; it < SWEEPS; it++) {
+    for (let g = 1; g <= maxGen; g++) nudge(rows[g], 'parents');
+    for (let g = maxGen - 1; g >= 0; g--) nudge(rows[g], 'children');
   }
 
   const pos = new Map();
@@ -154,7 +179,7 @@ export function computeLayout(people, links) {
   const adjacent = new Set();
   let cursor = 0;
   for (const comp of components(people, idx)) {
-    const result = layoutComponent(comp, idx, insertion);
+    const result = layoutComponent(comp, idx, insertion, links);
     result.adjacent.forEach((k) => adjacent.add(k));
     let minX = Infinity;
     let maxX = -Infinity;
