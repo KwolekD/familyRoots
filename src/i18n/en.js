@@ -22,6 +22,7 @@ export default {
   'menu.connect': 'Connect two people',
   'menu.connect.desc': 'Link people who are already in the tree',
   'menu.tip': 'Tip: click a card on the tree to see details, double-click to edit it.',
+  'menu.tipMove': 'Drag a selected card sideways to move it. Its family moves with it.',
 
   'person.addTitle': 'Add person',
   'person.addTitle.parentOf': 'Add parent of {name}',
@@ -90,6 +91,9 @@ export default {
   'file.pngFailed': 'PNG export failed: {msg}',
   'file.import': 'Import JSON',
   'file.import.desc': 'Load a tree from a backup file',
+  'file.resetOrder': 'Reset card positions',
+  'file.resetOrder.desc': 'Undo cards you moved and let the tree arrange itself',
+  'file.orderReset': 'Cards are arranged automatically again',
   'file.clear': 'Clear all',
   'file.clear.desc': 'Remove everyone from the tree',
   'file.imported': { one: 'Imported {n} person', other: 'Imported {n} people' },

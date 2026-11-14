@@ -36,6 +36,11 @@
 
 .node { cursor: pointer; }
 
+/* The selected card can be dragged sideways (src/ui/cardDrag.js). */
+.node.selected,
+#tree.moving-card,
+#tree.moving-card .node { cursor: ew-resize; }
+
 .node .card {
   fill: var(--surface);
   stroke: var(--border);

@@ -9,7 +9,8 @@ No framework and no build step: plain HTML, CSS and JavaScript (ES modules), dra
 - Add and edit people: first names, surname, family (birth/maiden) name, birth and death dates (full date, month and year, or just the year), gender
 - Connect people as **parent / child** or **partner**, either while adding a person or afterwards
 - Mark each connection as **blood** (solid line) or **not blood** (dotted line, e.g. partner, adoption, step-parent)
-- Automatic generational layout, with partners placed side by side
+- Automatic generational layout: partners side by side (a woman-man couple woman on the left), siblings on one row in birth order
+- Rearrange by hand: drag a selected card sideways and its family moves with it
 - Validation that blocks impossible links (e.g. someone becoming their own ancestor, more than two blood parents)
 - Pan, zoom and fit-to-screen on the tree canvas
 - Details card for the selected person, showing age and connections
@@ -40,7 +41,8 @@ The app uses ES modules, so it has to be served over HTTP. Opening `index.html` 
 - **Select**: click a person to open their details card. Press `Esc` to close it.
 - **Edit**: double-click a person, or use the details card.
 - **Navigate**: drag to pan, scroll to zoom, or use the `+` / `−` / fit buttons.
-- **Data**: *Export JSON*, *Export PNG*, *Import JSON* and *Clear all* are in the *File* tab.
+- **Rearrange**: select a card, then drag it sideways within its row. Its partner and everyone below move with it. Dropping it past someone from another family moves their parents instead, so whole families swap. *File* → *Reset card positions* undoes all moves.
+- **Data**: *Export JSON*, *Export PNG*, *Import JSON*, *Reset card positions* and *Clear all* are in the *File* tab.
 - **Settings**: pick the theme (system / light / dark) and language (English / Polski), and turn animations, full names, the line legend, the statistics badge and the zoom buttons on or off.
 
 ## Project structure
@@ -72,9 +74,11 @@ Exported JSON looks like this:
   ],
   "links": [
     { "id": "l1", "type": "parent", "a": "jan", "b": "piotr", "blood": true }
-  ]
+  ],
+  "rowOrder": { "jan": 0 }
 }
 ```
 
 - `type: "parent"`: `a` is a parent of `b`
 - `type: "partner"`: `a` and `b` are partners
+- `rowOrder` (optional): left-to-right ranks of cards moved by hand

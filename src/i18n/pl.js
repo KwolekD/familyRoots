@@ -21,6 +21,7 @@ export default {
   'menu.connect': 'Połącz dwie osoby',
   'menu.connect.desc': 'Powiąż osoby, które już są w drzewie',
   'menu.tip': 'Wskazówka: kliknij kartę, aby zobaczyć szczegóły, kliknij dwukrotnie, aby ją edytować.',
+  'menu.tipMove': 'Zaznaczoną kartę możesz przeciągnąć w bok. Jej rodzina przesunie się razem z nią.',
 
   'person.addTitle': 'Dodaj osobę',
   'person.addTitle.parentOf': 'Dodaj rodzica osoby {name}',
@@ -89,6 +90,9 @@ export default {
   'file.pngFailed': 'Eksport PNG nie powiódł się: {msg}',
   'file.import': 'Importuj JSON',
   'file.import.desc': 'Wczytaj drzewo z pliku kopii zapasowej',
+  'file.resetOrder': 'Przywróć układ kart',
+  'file.resetOrder.desc': 'Cofnij przesunięcia kart i pozwól drzewu ułożyć się samo',
+  'file.orderReset': 'Karty znów są układane automatycznie',
   'file.clear': 'Wyczyść wszystko',
   'file.clear.desc': 'Usuń wszystkich z drzewa',
   'file.imported': {

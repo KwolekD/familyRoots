@@ -1,8 +1,9 @@
 import { MAX_ZOOM, MIN_ZOOM } from '../config.js';
-import { select } from '../state/store.js';
+import { store, select } from '../state/store.js';
 import { camera, draw, svgSize, fitToScreen } from '../render/scene.js';
 import { $ } from '../utils/dom.js';
 import { startEdit } from './personForm.js';
+import { cardDragMove, cardDragEnd } from './cardDrag.js';
 
 const svg = $('#tree');
 const DOUBLE_CLICK_MS = 350;
@@ -56,6 +57,7 @@ function onPointerDown(e) {
   svg.setPointerCapture(e.pointerId);
   if (pointers.size === 2) {
     // A second finger turns the gesture into a pinch; it never counts as a click.
+    if (drag?.card && drag.moved) cardDragEnd(drag.nodeId, 0, true);
     drag = null;
     svg.classList.remove('panning');
     pinch = pinchState();
@@ -70,6 +72,8 @@ function onPointerDown(e) {
     moved: false,
     nodeId: e.target.closest('.node')?.dataset.id || null,
   };
+  // The selected card can be dragged sideways to rearrange the tree.
+  drag.card = !!drag.nodeId && drag.nodeId === store.selectedId;
 }
 
 function onPointerMove(e) {
@@ -80,10 +84,16 @@ function onPointerMove(e) {
   const dx = e.clientX - drag.sx;
   const dy = e.clientY - drag.sy;
   if (!drag.moved && Math.abs(dx) + Math.abs(dy) < DRAG_THRESHOLD) return;
+  // A mostly vertical start pans even on the selected card.
+  if (!drag.moved && Math.abs(dy) > Math.abs(dx)) drag.card = false;
   drag.moved = true;
-  svg.classList.add('panning');
   const s = svgSize();
   const v = camera.view;
+  if (drag.card) {
+    drag.dx = (dx * v.w) / s.w;
+    return cardDragMove(drag.nodeId, drag.dx);
+  }
+  svg.classList.add('panning');
   camera.view = { ...v, x: drag.vx - (dx * v.w) / s.w, y: drag.vy - (dy * v.h) / s.h };
   camera.locked = true;
   draw();
@@ -99,7 +109,9 @@ function onPointerEnd(e) {
   }
   if (!drag) return;
   svg.classList.remove('panning');
-  if (!drag.moved && e.type === 'pointerup') {
+  if (drag.card && drag.moved) {
+    cardDragEnd(drag.nodeId, drag.dx, e.type !== 'pointerup');
+  } else if (!drag.moved && e.type === 'pointerup') {
     const now = performance.now();
     if (drag.nodeId && lastClick.id === drag.nodeId && now - lastClick.t < DOUBLE_CLICK_MS) startEdit(drag.nodeId);
     select(drag.nodeId);

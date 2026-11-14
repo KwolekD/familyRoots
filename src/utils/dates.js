@@ -38,6 +38,13 @@ export function compareDates(a, b) {
   return x.d && y.d ? x.d - y.d : 0;
 }
 
+// Number for sorting, or null without a date. compareDates can't sort a list ("1990" equals
+// both "1990-03" and "1990-05"), so missing parts count as earliest here.
+export function dateSortKey(s) {
+  const p = parseDate(s);
+  return p ? p.y * 10000 + (p.m || 0) * 100 + (p.d || 0) : null;
+}
+
 // Whether the anniversary of `b` has been reached in the year of `e`; null when the dates are too vague to tell.
 function anniversaryReached(b, e) {
   if (!b.m || !e.m) return null;

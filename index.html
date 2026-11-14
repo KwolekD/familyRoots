@@ -81,6 +81,7 @@
               <span><b data-i18n="menu.connect">Connect two people</b><small data-i18n="menu.connect.desc">Link people who are already in the tree</small></span>
             </button>
             <p class="hint" data-i18n="menu.tip">Tip: click a card on the tree to see details, double-click to edit it.</p>
+            <p class="hint" data-i18n="menu.tipMove">Drag a selected card sideways to move it. Its family moves with it.</p>
           </div>
 
           <div class="view" data-view="person" hidden>
@@ -209,6 +210,10 @@
           <button type="button" class="option" id="import-btn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" /></svg>
             <span><b data-i18n="file.import">Import JSON</b><small data-i18n="file.import.desc">Load a tree from a backup file</small></span>
+          </button>
+          <button type="button" class="option" id="reset-order-btn" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" /></svg>
+            <span><b data-i18n="file.resetOrder">Reset card positions</b><small data-i18n="file.resetOrder.desc">Undo cards you moved and let the tree arrange itself</small></span>
           </button>
           <button type="button" class="option danger" id="clear-btn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>

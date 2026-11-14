@@ -32,6 +32,9 @@ export const COMPONENT_GAP = 140;
 // Minimum horizontal distance between the connector spans of two families in the same gap
 // (must exceed EDGE_LANE_MARGIN so separated families don't need lanes).
 export const FAMILY_GAP = 44;
+// Putting siblings on one row may make a tree with marriages across generations this many
+// rows taller at most; past that, siblings that can't fit stay on different rows.
+export const SIBLING_EXTRA_ROWS = 2;
 // Time budget for reordering rows to untangle families (per connected group of people).
 export const UNTANGLE_MS = 120;
 // Parent->child connectors of different families that overlap horizontally get separate heights

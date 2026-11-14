@@ -3,65 +3,13 @@ import { nodeSize } from './nodeSize.js';
 import { buildIndex, components } from '../model/graph.js';
 import { assignGenerations } from './generations.js';
 import { pairKey } from '../utils/format.js';
+import { dateSortKey } from '../utils/dates.js';
 import { separateFamilies } from './separate.js';
 import { untangle } from './untangle.js';
+import { initialOrder, buildUnits } from './units.js';
 
 const SWEEPS = 12;
 const REORDER_SWEEPS = 6;
-
-function initialOrder(ids, idx, insertion) {
-  const order = new Map();
-  let k = 0;
-  const visit = (id) => {
-    if (order.has(id)) return;
-    order.set(id, k++);
-    const n = idx.get(id);
-    n.partners.forEach(visit);
-    n.children.forEach(visit);
-  };
-  const sorted = [...ids].sort((a, b) => insertion.get(a) - insertion.get(b));
-  sorted.filter((id) => !idx.get(id).parents.length).forEach(visit);
-  sorted.forEach(visit);
-  return order;
-}
-
-// A unit is a chain of partners drawn side by side on one row.
-function buildUnits(ids, idx, gen, order) {
-  const unitOf = new Map();
-  const units = [];
-  const sorted = [...ids].sort((a, b) => order.get(a) - order.get(b));
-  for (const id of sorted) {
-    if (unitOf.has(id)) continue;
-    const g = gen.get(id);
-    const group = [];
-    const inGroup = new Set([id]);
-    const stack = [id];
-    while (stack.length) {
-      const x = stack.pop();
-      group.push(x);
-      for (const s of idx.get(x).partners) {
-        if (!inGroup.has(s) && gen.get(s) === g) {
-          inGroup.add(s);
-          stack.push(s);
-        }
-      }
-    }
-    const degree = (x) => idx.get(x).partners.filter((s) => inGroup.has(s)).length;
-    const start = group.reduce((best, x) => (degree(x) < degree(best) ? x : best), group[0]);
-    const members = [];
-    const visited = new Set();
-    const walk = (x) => {
-      visited.add(x);
-      members.push(x);
-      for (const s of idx.get(x).partners) if (inGroup.has(s) && !visited.has(s)) walk(s);
-    };
-    walk(start);
-    const unit = { members, gen: g, x: 0, desired: 0, w: members.length * nodeSize.w + (members.length - 1) * PARTNER_GAP };
-    members.forEach((m, i) => unitOf.set(m, { unit, i }));
-    units.push(unit);
-  }
-  return { units, unitOf };
-}
 
 // Moves units as close to their desired x as possible without overlapping.
 function placeRow(row) {
@@ -82,10 +30,11 @@ function placeRow(row) {
   }
 }
 
-function layoutComponent(ids, idx, insertion, links) {
-  const { gen } = assignGenerations(ids, idx);
-  const order = initialOrder(ids, idx, insertion);
-  const { units, unitOf } = buildUnits(ids, idx, gen, order);
+// `info`: { insertion, born, gender, manual }, Maps keyed by person id.
+function layoutComponent(ids, idx, info, links) {
+  const { gen } = assignGenerations(ids, idx, { alignSiblings: true });
+  const order = initialOrder(ids, idx, info.insertion, info.born);
+  const { units, unitOf } = buildUnits(ids, idx, gen, order, info.gender);
   const maxGen = Math.max(...units.map((u) => u.gen));
   const rows = Array.from({ length: maxGen + 1 }, () => []);
   for (const u of units) rows[u.gen].push(u);
@@ -128,7 +77,7 @@ function layoutComponent(ids, idx, insertion, links) {
       const targets = targetsOf(u, rel);
       const first = targets[0];
       const last = targets[targets.length - 1];
-      if (reorder && u.members.length > 1 && first !== null && last !== null && first > last + 1) {
+      if (reorder && !u.fixed && u.members.length > 1 && first !== null && last !== null && first > last + 1) {
         u.members.reverse();
         targets.reverse();
         u.members.forEach((m, i) => (unitOf.get(m).i = i));
@@ -142,7 +91,7 @@ function layoutComponent(ids, idx, insertion, links) {
   const parentLinks = links.filter((l) => l.type === 'parent' && unitOf.has(l.a) && unitOf.has(l.b));
   for (let it = 0; it < SWEEPS; it++) {
     const reorder = it < REORDER_SWEEPS;
-    if (it === REORDER_SWEEPS) untangle(rows, units, unitOf, parentLinks, offset);
+    if (it === REORDER_SWEEPS) untangle(rows, units, unitOf, parentLinks, offset, info);
     for (let g = 1; g <= maxGen; g++) sweep(rows[g], 'parents', reorder);
     for (let g = maxGen - 1; g >= 0; g--) sweep(rows[g], 'children', reorder);
   }
@@ -172,14 +121,20 @@ function layoutComponent(ids, idx, insertion, links) {
 }
 
 // Returns card positions (top-left corners) and the set of partner pairs drawn side by side.
-export function computeLayout(people, links) {
+// `rowOrder`: { id: rank } for cards the user dragged (see rowOrder.js).
+export function computeLayout(people, links, rowOrder = {}) {
   const idx = buildIndex(people, links);
-  const insertion = new Map(people.map((p, i) => [p.id, i]));
+  const info = {
+    insertion: new Map(people.map((p, i) => [p.id, i])),
+    born: new Map(people.map((p) => [p.id, dateSortKey(p.birth)])),
+    gender: new Map(people.map((p) => [p.id, p.gender])),
+    manual: new Map(Object.entries(rowOrder)),
+  };
   const pos = new Map();
   const adjacent = new Set();
   let cursor = 0;
   for (const comp of components(people, idx)) {
-    const result = layoutComponent(comp, idx, insertion, links);
+    const result = layoutComponent(comp, idx, info, links);
     result.adjacent.forEach((k) => adjacent.add(k));
     let minX = Infinity;
     let maxX = -Infinity;

@@ -6,14 +6,14 @@
 |---|---|
 | `src/main.js` | Entry point. Inits UI modules, subscribes to store events, loads saved state (or starts empty). |
 | `src/config.js` | Constants: storage keys, default settings, card size, gaps, animation time, zoom limits. |
-| `src/state/store.js` | Single global `store` (`state: {people, links}`, `selectedId`), tiny event bus, persistence, `sanitize()`. |
+| `src/state/store.js` | Single global `store` (`state: {people, links, rowOrder}`, `selectedId`), `emptyState()`, tiny event bus, persistence, `sanitize()`. |
 | `src/state/settings.js` | UI preferences (`settings`, `setSettings`, `onSettings`, `defaultSettings`), saved under their own localStorage key so import/clear don't touch them. Detects the default language. |
 | `src/i18n/` | `t()`, `applyTranslations()`, `en.js` / `pl.js` dictionaries. See [i18n-theme.md](i18n-theme.md). |
 | `src/model/graph.js` | Pure graph helpers: `buildIndex`, `components`, `isAncestor`. |
 | `src/model/relations.js` | `addLink` (with validation), `toggleLinkBlood`. See [data-model.md](data-model.md). |
-| `src/layout/` | `assignGenerations`, `computeLayout`. Pure functions with no DOM access. See [layout.md](layout.md). |
+| `src/layout/` | `assignGenerations`, `computeLayout`, `moveCard` (manual arrangement). Pure functions with no DOM access. See [layout.md](layout.md). |
 | `src/render/` | `scene.js` (camera, animation, relayout), `nodes.js` (person cards), `edges.js` (connector paths), `png.js` (PNG export). |
-| `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export JSON/PNG, import, clear), `panZoom`, `toast`, `formHelpers`. |
+| `src/ui/` | `sidebar` (tabs, views, collapse), `settingsPanel`, `personForm` (add/edit person + quick-connect), `linkForm` (connect two people), `details` (selected-person card), `toolbar` (export JSON/PNG, import, reset card positions, clear), `panZoom`, `cardDrag`, `toast`, `formHelpers`. |
 | `src/utils/` | `dates` (parse, long date, age), `dom` (`$`), `format` (`uid`, `pairKey`, `esc`, `fullName`, labels). |
 | `styles/` | `theme.css` (light/dark color tokens), then one CSS file per area: base, sidebar (rail, drawer, option cards), forms (fields, chips, switches), canvas, tree, details, and last `mobile.css` (phone overrides). |
 
@@ -60,7 +60,7 @@ In `refreshAll`, `renderDetails()` runs **before** `relayout()` because `fitView
 ## Interaction
 
 - Click card → `select`. Double-click (manual timing in `panZoom.js`, 350 ms) → `startEdit`.
-- Drag on the canvas pans. A drag threshold of 4px separates drags from clicks. Wheel zooms around the cursor. Two-finger pinch zooms around the midpoint and pans with it; it never counts as a click.
+- Drag on the canvas pans. A drag threshold of 4px separates drags from clicks. A drag that starts on the **selected** card and mostly sideways moves that card instead (`cardDrag.js`): `previewShift()` draws its unit following the pointer, and on release `moveCard()` writes `state.rowOrder` and commits (or `snapBack()` if the order didn't change). Only the selected card is a handle, so grabbing any other card still pans. A second finger cancels the move. Wheel zooms around the cursor. Two-finger pinch zooms around the midpoint and pans with it; it never counts as a click.
 - User pan/zoom sets `camera.locked` so a running animation stops moving the camera.
 - `Esc` (outside inputs) deselects.
 - Details card buttons: add parent/partner/child (`startAdd`), edit, delete, toggle blood, unlink.

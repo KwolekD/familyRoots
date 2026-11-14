@@ -1,4 +1,4 @@
-import { store, replaceState, sanitize } from '../state/store.js';
+import { store, replaceState, sanitize, commit, emptyState } from '../state/store.js';
 import { $ } from '../utils/dom.js';
 import { toast } from './toast.js';
 import { t } from '../i18n/index.js';
@@ -45,6 +45,17 @@ export function initToolbar() {
 
   $('#clear-btn').addEventListener('click', () => {
     if (!store.state.people.length || !confirm(t('file.confirmClear'))) return;
-    replaceState({ people: [], links: [] });
+    replaceState(emptyState());
   });
+
+  $('#reset-order-btn').addEventListener('click', () => {
+    store.state.rowOrder = {};
+    commit({ fit: false });
+    toast(t('file.orderReset'));
+  });
+}
+
+// "Reset card positions" only shows once a card was moved by hand.
+export function refreshToolbar() {
+  $('#reset-order-btn').hidden = !Object.keys(store.state.rowOrder).length;
 }

@@ -4,8 +4,11 @@ import { t } from '../i18n/index.js';
 
 // link.type === 'parent'  -> link.a is a parent of link.b
 // link.type === 'partner' -> link.a and link.b are partners
+// rowOrder: { personId: rank } for cards the user dragged (see layout/arrange.js)
+export const emptyState = () => ({ people: [], links: [], rowOrder: {} });
+
 export const store = {
-  state: { people: [], links: [] },
+  state: emptyState(),
   selectedId: null,
 };
 
@@ -47,6 +50,7 @@ export function removePerson(id) {
   const { state } = store;
   state.people = state.people.filter((p) => p.id !== id);
   state.links = state.links.filter((l) => l.a !== id && l.b !== id);
+  delete state.rowOrder[id];
   if (store.selectedId === id) store.selectedId = null;
 }
 
@@ -91,5 +95,9 @@ export function sanitize(data) {
   const links = data.links
     .filter((l) => l && ids.has(l.a) && ids.has(l.b) && l.a !== l.b && ['parent', 'partner'].includes(l.type))
     .map((l) => ({ id: typeof l.id === 'string' ? l.id : uid(), type: l.type, a: l.a, b: l.b, blood: !!l.blood }));
-  return { people, links };
+  // Optional (older files have none); only finite ranks of known people.
+  const rowOrder = {};
+  const order = data.rowOrder && typeof data.rowOrder === 'object' ? data.rowOrder : {};
+  for (const [id, r] of Object.entries(order)) if (ids.has(id) && Number.isFinite(r)) rowOrder[id] = r;
+  return { people, links, rowOrder };
 }

@@ -108,7 +108,8 @@ export function families(parentLinks, unitOf, offset) {
       });
       if (j >= 0) {
         used.add(j);
-        addTo(point(A.unit, [l.a, ls[j].a]), `${l.a}+${ls[j].a}`, child);
+        // Sorted ids: siblings whose parent links were added in a different order share the key.
+        addTo(point(A.unit, [l.a, ls[j].a]), [l.a, ls[j].a].sort().join('+'), child);
       } else {
         addTo(point(A.unit, [l.a]), l.a, child);
       }

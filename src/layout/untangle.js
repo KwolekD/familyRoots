@@ -1,5 +1,6 @@
 import { UNTANGLE_MS } from '../config.js';
 import { families } from './separate.js';
+import { applyManualOrder, birthOrder, joinedFamilyKey } from './rowOrder.js';
 
 const MAX_PASSES = 6;
 
@@ -16,34 +17,46 @@ const avg = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
 // Re-sorts rows top-down so every family's children sit together, in the order of their
 // sources. A unit with children of several families (a couple whose both sides have parents)
 // sorts between them, turned so each spouse faces their own parents. Units without parents
-// keep their place after the unit before them.
-function groupRows(rows, unitOf, fams) {
+// keep their place after the unit before them. Siblings then go in birth order. Manual order
+// (dragged cards) is applied first, so it holds wherever it doesn't split a family.
+// `prefs`: { born, manual }, Maps keyed by person id.
+function groupRows(rows, unitOf, fams, prefs) {
+  applyManualOrder(rows[0], prefs.manual);
   for (let g = 1; g < rows.length; g++) {
+    applyManualOrder(rows[g], prefs.manual);
     const rank = ranker(rows);
     const srcs = new Map(); // unit -> per member: source ranks
+    const kidOf = new Map(); // unit -> ids of its members who have parents
     for (const f of fams) {
       if (f.gen !== g) continue;
       for (const k of f.kids) {
-        if (!srcs.has(k.unit)) srcs.set(k.unit, k.unit.members.map(() => []));
+        if (!srcs.has(k.unit)) {
+          srcs.set(k.unit, k.unit.members.map(() => []));
+          kidOf.set(k.unit, []);
+        }
         srcs.get(k.unit)[k.i].push(rank(f.src));
+        const id = k.unit.members[k.i];
+        if (!kidOf.get(k.unit).includes(id)) kidOf.get(k.unit).push(id);
       }
     }
+    const famKeys = (u) => (srcs.get(u) || []).filter((x) => x.length).map(avg);
     const keys = new Map();
     let prev = -Infinity;
-    for (const u of rows[g]) {
+    rows[g].forEach((u, i) => {
       const s = srcs.get(u);
       if (s) {
         const first = s[0];
         const last = s[s.length - 1];
-        if (s.length > 1 && first.length && last.length && avg(first) > avg(last)) {
+        if (!u.fixed && s.length > 1 && first.length && last.length && avg(first) > avg(last)) {
           u.members.reverse();
-          u.members.forEach((m, i) => (unitOf.get(m).i = i));
+          u.members.forEach((m, k) => (unitOf.get(m).i = k));
         }
-        prev = avg(s.flat());
+        prev = joinedFamilyKey(rows[g], i, famKeys, prefs.manual) ?? avg(s.flat());
       }
       keys.set(u, prev);
-    }
+    });
     rows[g].sort((a, b) => keys.get(a) - keys.get(b));
+    birthOrder(rows[g], keys, kidOf, prefs);
   }
 }
 
@@ -77,10 +90,10 @@ function conflicts(rows, fams, involved) {
 // Mainly fixes couples linking two families (both spouses have parents in the tree).
 // Some trees can't be fully untangled, e.g. three children who all married into families
 // in the tree: only two can sit at the ends of their sibling group.
-export function untangle(rows, units, unitOf, parentLinks, offset) {
+export function untangle(rows, units, unitOf, parentLinks, offset, prefs) {
   const fams = families(parentLinks, unitOf, offset);
   const regroupScore = () => {
-    groupRows(rows, unitOf, fams);
+    groupRows(rows, unitOf, fams, prefs);
     return conflicts(rows, fams);
   };
   let best = regroupScore();
@@ -113,7 +126,7 @@ export function untangle(rows, units, unitOf, parentLinks, offset) {
     for (const row of rows) {
       for (const u of row.filter((x) => involved.has(x))) {
         if (best === 0 || performance.now() > deadline) return;
-        if (u.members.length > 1 && tryMove(() => flip(u))) improved = true;
+        if (u.members.length > 1 && !u.fixed && tryMove(() => flip(u))) improved = true;
         for (let j = 0; j < row.length && best > 0; j++) {
           const moveTo = () => {
             row.splice(row.indexOf(u), 1);

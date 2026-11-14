@@ -1,9 +1,9 @@
-import { store, on, load, select } from './state/store.js';
+import { store, on, load, select, emptyState } from './state/store.js';
 import { relayout, highlight, resetScene } from './render/scene.js';
 import { initPersonForm, refreshPersonForm } from './ui/personForm.js';
 import { initLinkForm, refreshLinkForm } from './ui/linkForm.js';
 import { initDetails, renderDetails } from './ui/details.js';
-import { initToolbar } from './ui/toolbar.js';
+import { initToolbar, refreshToolbar } from './ui/toolbar.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initSettingsPanel } from './ui/settingsPanel.js';
 import { initPanZoom } from './ui/panZoom.js';
@@ -24,6 +24,7 @@ function refreshAll({ fit = true, animate = true } = {}) {
   renderDetails();
   relayout({ fit, animate });
   updateStatus();
+  refreshToolbar();
 }
 
 applyTranslations();
@@ -62,5 +63,5 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !e.target.closest('input, select')) select(null);
 });
 
-store.state = load() || { people: [], links: [] };
+store.state = load() || emptyState();
 refreshAll({ animate: false });

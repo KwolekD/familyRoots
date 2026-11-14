@@ -94,7 +94,7 @@ export function relayout({ fit = true, animate = true } = {}) {
   animate = animate && settings.animate;
   const { people, links } = store.state;
   nodeSize.w = cardWidth(people);
-  const result = computeLayout(people, links);
+  const result = computeLayout(people, links, store.state.rowOrder);
   layout = result.pos;
   adjacentPairs = result.adjacent;
   for (const id of [...shown.keys()]) if (!layout.has(id)) shown.delete(id);
@@ -124,6 +124,24 @@ export const fitToScreen = () => animateTo(fitView());
 export const highlight = () => highlightSelection(nodeEls, store.selectedId);
 
 export const resetScene = () => shown.clear();
+
+// ---------- Card drag (src/ui/cardDrag.js) ----------
+
+export const currentLayout = () => ({ pos: layout, adjacent: adjacentPairs });
+
+// Draws `ids` shifted `dx` sideways from their place, on top; everything else at its place.
+export function previewShift(ids, dx) {
+  cancelAnimationFrame(animFrame);
+  for (const [id, p] of layout) shown.set(id, { ...p });
+  for (const id of ids) {
+    shown.set(id, { x: layout.get(id).x + dx, y: layout.get(id).y });
+    gNodes.appendChild(nodeEls.get(id));
+  }
+  draw();
+}
+
+// Animates dragged cards back when a drop changed nothing (no relayout needed).
+export const snapBack = () => animateTo(null);
 
 // When the canvas changes size (sidebar toggle, window resize), keep the zoom level
 // and the centre of the view instead of letting the SVG stretch or letterbox.
